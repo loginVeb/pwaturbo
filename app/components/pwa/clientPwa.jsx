@@ -1,14 +1,20 @@
 "use client";
+
 import { useEffect } from 'react';
 
 function ClientPwa() {
   useEffect(() => {
-    const handleBeforeInstallPrompt = (event) => {
-      event.preventDefault();
-      event.showInstallPrompt();
+    let beforeInstallEvent;
+
+    const handleBeforeInstallPrompt = () => {
+      beforeInstallEvent.preventDefault();
+      beforeInstallEvent.showInstallPrompt();
     };
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('beforeinstallprompt', (event) => {
+      event.preventDefault();
+      beforeInstallEvent = event;
+    });
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
