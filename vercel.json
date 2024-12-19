@@ -1,0 +1,18 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "app/index.js",
+        "use": "@vercel/next",
+        "config": {
+          "runtime": "edge"
+        }
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "app/index.html"
+      }
+    ]
+  }
