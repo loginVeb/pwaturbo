@@ -21,7 +21,7 @@ export const metadata = {
   ogUrl: "https://yourdomain.com",
   ogImage: "/icons/og.png",
   appleMobileWebAppCapable: true,
-  
+
   // viewport: generateViewport(),
 
   appleTouchIcons: [
@@ -179,9 +179,9 @@ export default function RootLayout({ children }) {
 
     <html lang="en" suppressHydrationWarning>
       <head>
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-title" content="My awesome PWA app" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-title" content="My awesome PWA app" />
+        <meta name="mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="apple-touch-icon" href="/ios/180.png" />
       </head>
       <body >
