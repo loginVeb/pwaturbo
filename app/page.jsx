@@ -6,8 +6,8 @@ export default function Home() {
   return (
     <div className={styles.mainPageDiv}>
      5555555555
-     {/* {typeof window !== 'undefined' && <PwaInstaller />} */}
-     <ClientPwa /> 
+    
+     <ClientPwa styles={styles} />
      </div>
   );
 }

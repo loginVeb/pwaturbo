@@ -20,6 +20,8 @@ export const metadata = {
   ogSiteName: "My awesome PWA app",
   ogUrl: "https://yourdomain.com",
   ogImage: "/icons/og.png",
+  appleMobileWebAppCapable: true,
+  
   // viewport: generateViewport(),
 
   appleTouchIcons: [
