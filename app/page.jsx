@@ -1,14 +1,14 @@
 
 import styles from "./page.module.css";
 import ClientPwa from "./components/pwa/clientPwa";
+import Table from './components/table';
 
 export default function Home() {
   return (
     <div className={styles.mainPageDiv}>
-     5555555555
-    
-     <ClientPwa styles={styles} />
-     </div>
+     {/* <ClientPwa styles={styles} /> */}
+     <Table styles={styles} />
+ </div>
   );
 }
 // contr+shift+p settings настройки
