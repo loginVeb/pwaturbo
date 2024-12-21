@@ -21,23 +21,60 @@
 }
 
 .field{
-  grid-area: 2/2/6/17;
+  grid-area: 2/3/6/17;
   color: #191d1b;
   background: #e9f3f7;
 
   border: 1px black solid;
 }
 .addGuard{
-  grid-area: 2/17/4/22;
+  grid-area: 2/17/4/23;
   color: black;
   background: hsl(310, 69%, 55%);
 
 
 }
 .confirmButton{
-  grid-area: 4/17/6/22;
+  grid-area: 4/17/6/23;
   color: #080808de;
   background: hwb(110 4% 5%);
   
 
 }
+.dvList{
+  grid-area: 6/3/25/23;
+  color: #080808de;
+  background: hwb(64 9% 12%);
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  grid-template-rows: repeat(24, 1fr);
+}
+.list{
+  grid-area: 2/2/24/24;
+  color: #0a0a0ade;
+  background: hwb(320 6% 8%);
+  display: flex;
+  flex-direction: column;
+  list-style-type: none;
+
+ 
+}
+
+.listItem{
+  flex-wrap: nowrap;
+  border: 1px solid black;
+  padding: 15px;
+  min-height: 50px; /* Минимальная высота */
+  display: flex;
+  align-items: center; /* Центрирование текста по вертикали */
+  font-size: 18px;
+
+}
+
+.listItem::before {
+  content: attr(data-index);
+  margin-right: 5px; /* Отступ справа от номера */
+}
+
+
+
