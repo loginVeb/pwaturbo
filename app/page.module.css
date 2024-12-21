@@ -27,15 +27,15 @@
 
   border: 1px black solid;
 }
-.addGuard{
+/* .addGuard{
   grid-area: 2/17/4/23;
   color: black;
   background: hsl(310, 69%, 55%);
 
 
-}
+} */
 .confirmButton{
-  grid-area: 4/17/6/23;
+  grid-area: 2/17/6/23;
   color: #080808de;
   background: hwb(110 4% 5%);
   
