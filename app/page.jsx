@@ -6,7 +6,7 @@ import Table from './components/table';
 export default function Home() {
   return (
     <div className={styles.mainPageDiv}>
-     {/* <ClientPwa styles={styles} /> */}
+     <ClientPwa styles={styles} />
      <Table styles={styles} />
  </div>
   );
