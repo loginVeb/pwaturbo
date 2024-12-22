@@ -14,7 +14,7 @@
 }
 
 .table{
-  grid-area: 2/9/8/18;
+  grid-area: 1/1/25/25;
   color: #1c382b;
   background: #db963b;
   display: grid;
@@ -66,7 +66,7 @@
   flex-wrap: nowrap;
   border: 1px solid black;
   padding: 15px;
-  min-height: 48px; /* Минимальная высота */
+  min-height: 40px; /* Минимальная высота */
   display: flex;
   align-items: center; /* Центрирование текста по вертикали */
   font-size: 18px;
@@ -78,7 +78,10 @@
   margin-right: 5px; /* Отступ справа от номера */
 }
 
-
+.p{
+  width: 100px;
+  height: 100px;
+}
 
 
 
