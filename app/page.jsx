@@ -18,6 +18,7 @@ export default function Home() {
 
 // npm run dev
 // rm -rf .next
+// rm -rf node_modules
 // npm run dev --pwa
 // git add ./
 // git commit -am '
