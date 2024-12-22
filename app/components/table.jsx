@@ -51,6 +51,17 @@ function Table({ styles }) {
       }
     }
 
+    // Добавление последней смены с 23:00 до 00:00
+    if (guardCount > 0) {
+      const guardName = sortedGuards[guardIndex];
+      const shift = `23:00 - 00:00`;
+
+      if (!newSchedule[1].guards[guardIndex]) {
+        newSchedule[1].guards[guardIndex] = { name: guardName, times: [] };
+      }
+      newSchedule[1].guards[guardIndex].times.push(shift);
+    }
+
     // Распределение по остальным постам
     Object.keys(newSchedule).forEach(postId => {
       if (postId !== '1') {
