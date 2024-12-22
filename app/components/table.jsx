@@ -1,9 +1,7 @@
-'use client'
-
+'use client';
 import { useState, useCallback, useEffect } from 'react';
 
 const guardNames = ['Логинов', 'Захаров', 'Орлов', 'Цветков', 'Тихомиров'];
-
 const posts = {
   1: { name: 'Главный пост', startTime: [8, 0], endTime: [23, 30] },
   2: { name: 'Пост 2', startTime: [16, 45], endTime: [17, 15] },
@@ -33,22 +31,24 @@ function Table({ styles }) {
 
     // Распределение по главному посту
     newSchedule[1].guards = [];
-    for (let i = 0; i < sortedGuards.length; i++) {
-      const guardName = sortedGuards[i];
-      let shiftTime = null;
-      
-      // Устанавливаем уникальный час дежурства с 23:00 до 24:00
-      if (shiftTime === null) {
-        shiftTime = [23, 0];
-      }
 
-      const shifts = [
-        `${8 + Math.floor(i)}:00 - ${9 + Math.floor(i)}:00`,
-        `${13 + Math.floor(i)}:00 - ${14 + Math.floor(i)}:00`,
-        `${18 + Math.floor(i)}:00 - ${19 + Math.floor(i)}:00`,
-        `${shiftTime.join(':')} - ${shiftTime.join(':')}`
-      ];
-      newSchedule[1].guards.push({ name: guardName, times: shifts });
+    const guardCount = sortedGuards.length;
+    let guardIndex = 0;
+
+    for (let hour = 8; hour < 23; hour++) {
+      if (guardCount > 0) {
+        const guardName = sortedGuards[guardIndex];
+        const startHour = hour;
+        const endHour = (hour + 1) % 24;
+        const shift = `${String(startHour).padStart(2, '0')}:00 - ${String(endHour).padStart(2, '0')}:00`;
+
+        if (!newSchedule[1].guards[guardIndex]) {
+          newSchedule[1].guards[guardIndex] = { name: guardName, times: [] };
+        }
+        newSchedule[1].guards[guardIndex].times.push(shift);
+
+        guardIndex = (guardIndex + 1) % guardCount; // Переход к следующему охраннику
+      }
     }
 
     // Распределение по остальным постам
@@ -58,7 +58,7 @@ function Table({ styles }) {
         const duration = (post.endTime[0] - post.startTime[0]) * 60 + post.endTime[1] - post.startTime[1];
         post.guards = [];
         for (let i = 0; i < duration; i += 30) {
-          const guardIndex = (i + sortedGuards.length) % sortedGuards.length;
+          const guardIndex = (i / 30) % guardCount;
           post.guards.push(sortedGuards[guardIndex]);
         }
       }
@@ -77,11 +77,9 @@ function Table({ styles }) {
           </option>
         ))}
       </select>
-
       <button className={styles.confirmButton} onClick={() => console.log(selectedGuards)}>
         Подтвердить список
       </button>
-
       <div className={styles.dvList}>
         <h3>Расписание</h3>
         {Object.keys(schedule).map(postId => (
@@ -99,5 +97,5 @@ function Table({ styles }) {
     </div>
   );
 }
- 
+
 export default Table;
