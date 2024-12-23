@@ -69,22 +69,22 @@
 } */
 
 .postId1{
-  grid-area: 2/1/25/6;
+  grid-area: 2/1/25/7;
 }
 .postId2{
-  grid-area: 2/7/25/9;
+  grid-area: 2/7/25/11;
 }
 .postId5{
-  grid-area: 2/10/25/12;
+  grid-area: 2/11/25/15;
 }
 .postId10{
-  grid-area: 2/13/25/16;
+  grid-area: 2/15/25/19;
 }
 .postId11{
-  grid-area: 2/17/25/20;
+  grid-area: 2/19/25/23;
 }
 .postId14{
-  grid-area: 2/21/25/25;
+  grid-area: 2/23/25/25;
 }
 
 .listItem{
