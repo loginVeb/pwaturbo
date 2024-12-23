@@ -22,6 +22,11 @@
   grid-template-rows: repeat(24, 1fr);
 }
 
+.dvList ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
 .field{
   grid-area: 2/3/6/17;
   color: #191d1b;
@@ -55,27 +60,32 @@
 .h3{
   grid-area: 1/10/2/15;
   color: #f02424de;
-  font-size: 25px;
+  font-size: 20px;
 }
 
-
+.postIdAll {
+ 
+  border: 0.1px solid #ccc;
+}
 .postId1{
-  grid-area: 2/1/25/7;
+  grid-area: 2/1/25/6;
+
 }
 .postId2{
-  grid-area: 2/7/25/11;
+  grid-area: 2/6/25/10;
 }
 .postId5{
-  grid-area: 2/11/25/15;
+  grid-area: 2/10/25/14;
+
 }
 .postId10{
-  grid-area: 2/15/25/19;
+  grid-area: 2/14/25/18;
 }
 .postId11{
-  grid-area: 2/19/25/23;
+  grid-area: 2/18/25/22;
 }
 .postId14{
-  grid-area: 2/23/25/25;
+  grid-area: 2/22/25/25;
 }
 
 .listItem{
@@ -94,10 +104,7 @@
   margin-right: 5px; /* Отступ справа от номера */
 }
 
-.p{
-  width: 100px;
-  height: 100px;
-}
+
 
 
 
@@ -111,7 +118,7 @@
 
 @media(420px <=width <= 499px) {
   .table {
-    grid-area: 2/1/8/25;
+    grid-area: 2/1/25/25;
     color: #1c382b;
     background: #db963b;
     display: grid;
@@ -174,20 +181,18 @@
     margin-right: 5px; /* Отступ справа от номера */
   }
   
-  .p{
-    width: 100px;
-    height: 100px;
-  }
+ 
 }
   
 @media(280px <=width <= 419px) {
   .table {
-    grid-area: 2/1/8/25;
+    grid-area: 2/1/25/25;
     color: #1c382b;
     background: #db963b;
     display: grid;
     grid-template-columns: repeat(24, 1fr);
     grid-template-rows: repeat(24, 1fr);
+    font-size: 12px;
   }
 
   .field{
@@ -220,6 +225,8 @@
     grid-template-columns: repeat(24, 1fr);
     grid-template-rows: repeat(24, 1fr);
   }
+
+
   .list{
     grid-area: 2/1/24/25;
     color: #0a0a0ade;
@@ -236,7 +243,7 @@
     min-height: 40px; /* Минимальная высота */
     display: flex;
     align-items: center; /* Центрирование текста по вертикали */
-    font-size: 18px;
+    font-size: 14px;
   
   }
   
@@ -245,8 +252,4 @@
     margin-right: 5px; /* Отступ справа от номера */
   }
   
-  .p{
-    width: 100px;
-    height: 100px;
-  }
 }

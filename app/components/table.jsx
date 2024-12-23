@@ -43,7 +43,6 @@ function Table({ styles }) {
       guardShifts[guard] = [];
     });
 
-    // Распределение по главному посту
     for (let hour = 8; hour < 23; hour++) {
       if (guardCount > 0) {
         const guardName = sortedGuards[guardIndex];
@@ -58,7 +57,6 @@ function Table({ styles }) {
       }
     }
 
-    // Добавление последней смены с 23:00 до 00:00
     if (guardCount > 0) {
       const guardName = sortedGuards[guardIndex];
       const shift = `23:00 - 00:00`;
@@ -67,7 +65,6 @@ function Table({ styles }) {
       guardHours[guardIndex] += 1;
     }
 
-    // Распределение по остальным постам
     Object.keys(newSchedule).forEach(postId => {
       if (postId !== '1') {
         const post = newSchedule[postId];
@@ -123,10 +120,10 @@ function Table({ styles }) {
       <div className={styles.dvList}>
         <h3 className={styles.h3}>Расписание</h3>
         {Object.keys(posts).map(postId => (
-          <div key={postId} className={styles[`postId${postId}`]}>
+          <div key={postId} className={`${styles.postIdAll} ${styles[`postId${postId}`]}`}>
             <h4>{schedule[postId]?.name}</h4>
-            <p className={styles.p}>Время: {schedule[postId]?.startTime?.join(':')} - {schedule[postId]?.endTime?.join(':')}</p>
-            <ul>
+            <div className={styles.p}>Время: {schedule[postId]?.startTime?.join(':')} - {schedule[postId]?.endTime?.join(':')}</div>
+            <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
               {postId === '1' ? (
                 Object.entries(schedule.guardShifts || {}).map(([guardName, shifts]) => (
                   <li key={guardName}>
