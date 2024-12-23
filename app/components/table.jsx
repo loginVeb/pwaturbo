@@ -121,9 +121,9 @@ function Table({ styles }) {
         сброс списка
       </button>
       <div className={styles.dvList}>
-        <h3>Расписание</h3>
+        <h3 className={styles.h3}>Расписание</h3>
         {Object.keys(schedule).map(postId => (
-          <div key={postId}>
+          <div key={postId} className={styles[`postId${postId}`]}>
             <h4>{schedule[postId]?.name}</h4>
             <p className={styles.p}>Время: {schedule[postId]?.startTime?.join(':')} - {schedule[postId]?.endTime?.join(':')}</p>
             <ul>
