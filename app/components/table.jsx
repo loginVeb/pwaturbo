@@ -2,13 +2,14 @@
 import { useState, useCallback, useEffect } from 'react';
 
 const guardNames = ['Логинов', 'Захаров', 'Орлов', 'Цветков', 'Тихомиров'];
+
 const posts = {
   1: { name: 'Главный пост', startTime: [8, 0], endTime: [23, 0] },
   2: { name: 'Пост 2', startTime: [16, 45], endTime: [17, 15] },
   5: { name: 'Пост 5', startTime: [12, 0], endTime: [12, 30] },
   10: { name: 'Пост 10', startTime: [10, 30], endTime: [11, 0] },
   11: { name: 'Пост 11', startTime: [11, 0], endTime: [11, 30] },
-  14: { name: 'Пост 14', startTime: [11, 30], endTime: [12, 0] },
+  14: { name: 'Пост 14', startTime: [11, 30], endTime: [12, 0] }
 };
 
 function Table({ styles }) {
@@ -31,7 +32,7 @@ function Table({ styles }) {
   }, [selectedGuards]);
 
   const generateSchedule = () => {
-    const newSchedule = JSON.parse(JSON.stringify(posts)); // Глубокое копирование объектов
+    const newSchedule = JSON.parse(JSON.stringify(posts));
     const sortedGuards = [...selectedGuards];
     const guardCount = sortedGuards.length;
     let guardIndex = 0;
@@ -53,7 +54,7 @@ function Table({ styles }) {
         guardShifts[guardName].push(shift);
         guardHours[guardIndex] += 1;
 
-        guardIndex = (guardIndex + 1) % guardCount; // Переход к следующему охраннику
+        guardIndex = (guardIndex + 1) % guardCount;
       }
     }
 
@@ -74,7 +75,6 @@ function Table({ styles }) {
         const endTime = post.endTime;
         post.guards = [];
 
-        // Выбираем охранника с наименьшей нагрузкой, который свободен
         let minHours = Infinity;
         let selectedGuard = null;
 
@@ -96,7 +96,7 @@ function Table({ styles }) {
 
         if (selectedGuard) {
           post.guards.push(selectedGuard);
-          guardHours[sortedGuards.indexOf(selectedGuard)] += 0.5; // Увеличиваем на 0.5 часа
+          guardHours[sortedGuards.indexOf(selectedGuard)] += 0.5;
         }
       }
     });
@@ -122,7 +122,7 @@ function Table({ styles }) {
       </button>
       <div className={styles.dvList}>
         <h3 className={styles.h3}>Расписание</h3>
-        {Object.keys(schedule).map(postId => (
+        {Object.keys(posts).map(postId => (
           <div key={postId} className={styles[`postId${postId}`]}>
             <h4>{schedule[postId]?.name}</h4>
             <p className={styles.p}>Время: {schedule[postId]?.startTime?.join(':')} - {schedule[postId]?.endTime?.join(':')}</p>
