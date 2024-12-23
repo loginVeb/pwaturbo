@@ -15,8 +15,7 @@ export default function Home() {
 // shift+alt+t перевод выделеной строки на русский
 //contr+1 скриншот
 // OneDrive/'Рабочий стол'/
-
-// npm run dev
+// create screenshots for application from image
 // rm -rf .next
 // rm -rf node_modules
 // npm run dev --pwa
