@@ -40,60 +40,49 @@ function Table({ styles }) {
 
     // Инициализация часов и смен для каждого охранника
     sortedGuards.forEach(guard => {
-        guardShifts[guard] = [];
-        guardHours[guard] = 0;
+      guardShifts[guard] = [];
+      guardHours[guard] = 0;
     });
 
     // Распределение главного поста
     let guardIndex = 0;
     for (let hour = 8; hour < 23; hour++) {
-        if (guardCount > 0) {
-            const guardName = sortedGuards[guardIndex];
-            const shift = `${String(hour).padStart(2, '0')}:00 - ${String((hour + 1) % 24).padStart(2, '0')}:00`;
-            guardShifts[guardName].push(shift);
-            guardHours[guardName]++;
-            guardIndex = (guardIndex + 1) % guardCount;
-        }
+      if (guardCount > 0) {
+        const guardName = sortedGuards[guardIndex];
+        const shift = `${String(hour).padStart(2, '0')}:00 - ${String((hour + 1) % 24).padStart(2, '0')}:00`;
+        guardShifts[guardName].push(shift);
+        guardHours[guardName]++;
+        guardIndex = (guardIndex + 1) % guardCount;
+      }
     }
 
     if (guardCount > 0) {
-        const guardName = sortedGuards[guardIndex];
-        guardShifts[guardName].push(`23:00 - 00:00`);
-        guardHours[guardName]++;
+      const guardName = sortedGuards[guardIndex];
+      guardShifts[guardName].push(`23:00 - 00:00`);
+      guardHours[guardName]++;
     }
 
     // Распределение второстепенных постов
     Object.keys(newSchedule).forEach(postId => {
-        if (postId !== '1') {
-            const post = newSchedule[postId];
-            post.guards = [];
-            
-            if (guardCount > 0) {
-                // Находим охранника с минимальной нагрузкой
-                let minHours = Infinity;
-                let selectedGuard = null;
+      if (postId !== '1') {
+        const post = newSchedule[postId];
+        post.guards = [];
+        
+        if (guardCount > 0) {
+          // Находим охранника с минимальной нагрузкой
+          let minHours = Math.min(...Object.values(guardHours));
+          let selectedGuard = Object.keys(guardHours).find(guard => guardHours[guard] === minHours);
 
-                for (const guard of sortedGuards) {
-                    const isGuardBusy = guardShifts[guard].some(shift => {
-                        const [shiftStart] = shift.split(' - ').map(time => parseInt(time.split(':')[0]));
-                        return shiftStart === post.startTime[0];
-                    });
-
-                    if (!isGuardBusy && guardHours[guard] < minHours) {
-                        minHours = guardHours[guard];
-                        selectedGuard = guard;
-                    }
-                }
-
-                if (selectedGuard) {
-                    post.guards.push(selectedGuard);
-                    guardHours[selectedGuard] += 0.5;
-                }
-            }
+          if (selectedGuard) {
+            post.guards.push(selectedGuard);
+            const duration = ((post.endTime[0] * 60 + post.endTime[1]) - (post.startTime[0] * 60 + post.startTime[1])) / 60;
+            guardHours[selectedGuard] += duration;
+          }
         }
+      }
     });
 
-    setSchedule({ ...newSchedule, guardShifts });
+    setSchedule({ ...newSchedule, guardShifts, guardHours });
   };
 
   return (
@@ -122,7 +111,7 @@ function Table({ styles }) {
               {postId === '1' ? (
                 Object.entries(schedule.guardShifts || {}).map(([guardName, shifts]) => (
                   <li key={guardName}>
-                    <strong>{guardName}:</strong> {shifts.join(', ')}
+                    <strong>{guardName}:</strong> {shifts.join(', ')} сумма часов: {Number(schedule.guardHours?.[guardName] || 0).toFixed(2)}
                   </li>
                 ))
               ) : (
