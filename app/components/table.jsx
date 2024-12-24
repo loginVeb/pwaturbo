@@ -67,8 +67,8 @@ function Table({ styles }) {
       if (postId !== '1') {
         const post = newSchedule[postId];
         post.guards = [];
-        
-        if (guardCount > 0) {
+
+        if (guardCount > 1) {
           // Находим охранника с минимальной нагрузкой
           let minHours = Math.min(...Object.values(guardHours));
           let selectedGuard = Object.keys(guardHours).find(guard => guardHours[guard] === minHours);
