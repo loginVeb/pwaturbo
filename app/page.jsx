@@ -16,6 +16,9 @@ export default function Home() {
 //contr+1 скриншот
 // OneDrive/'Рабочий стол'/
 // create screenshots for application from image
+
+// npm run dev
+
 // rm -rf .next
 // rm -rf node_modules
 // npm run dev --pwa

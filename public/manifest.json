@@ -1,7 +1,11 @@
 {
-  "name": "My awesome PWA app",
-  "short_name": "PWA App",
-  
+  "name": "timing",
+  "short_name": "timing",
+  "theme_color": "#FFFFFF",
+  "background_color": "#FFFFFF",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
 
  "screenshots": [
   {
@@ -475,10 +479,6 @@
       "src": "ios/1024.png",
       "sizes": "1024x1024"
     }
-  ],
-  "theme_color": "#FFFFFF",
-  "background_color": "#FFFFFF",
-  "start_url": "/",
-  "display": "standalone",
-  "orientation": "portrait"
+  ]
+ 
 }
