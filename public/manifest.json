@@ -6,8 +6,27 @@
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
+  "description": "Приложение для управления расписанием",
+  "prefer_related_applications": false,
+  "categories": ["utilities"],
+
+  "scope": "/",
+  "id": "timing_app",
+  "shortcuts": [
+    {
+      "name": "Открыть расписание",
+      "url": "/",
+      "icons": [{ "src": "android/android-launchericon-96-96.png", "sizes": "96x96" }]
+    }
+  ],
 
  "screenshots": [
+  {
+    "src": "/screenshots/mobile_screenshot_1.png",
+    "type": "image/png",
+    "platform": "narrow", 
+    "sizes": "750x1334"
+  },
   {
     "src": "/screenshots/wide_screenshot_1.png",
     "type": "image/png",
@@ -15,22 +34,29 @@
     "sizes": "1200x800"
   },
   {
-    "src": "/screenshots/wide_screenshot_2.png",
-    "type": "image/png",
-    "platform": "wide",
-    "sizes": "2560x1600",
-    "form_factor": "wide"
-  },
-  {
     "src": "/screenshots/wide_screenshot_3.png",
     "type": "image/png",
     "platform": "wide",
     "sizes": "1920x1200",
     "form_factor": "wide"
+  },
+  {
+    "src": "/screenshots/wide_screenshot_2.png",
+    "type": "image/png",
+    "platform": "wide",
+    "sizes": "2560x1600",
+    "form_factor": "wide"
   }
+
 ],
 
   "icons": [
+    {
+      "src": "maskable_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
     {
       "src": "windows11/SmallTile.scale-100.png",
       "sizes": "71x71"
