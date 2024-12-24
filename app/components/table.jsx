@@ -16,6 +16,28 @@ function Table({ styles }) {
   const [selectedGuards, setSelectedGuards] = useState([]);
   const [schedule, setSchedule] = useState({});
 
+  // Загрузка сохраненных данных при запуске
+  useEffect(() => {
+    const savedGuards = localStorage.getItem('selectedGuards');
+    const savedSchedule = localStorage.getItem('schedule');
+    
+    if (savedGuards) {
+      setSelectedGuards(JSON.parse(savedGuards));
+    }
+    if (savedSchedule) {
+      setSchedule(JSON.parse(savedSchedule));
+    }
+  }, []);
+
+  // Сохранение данных при изменениях
+  useEffect(() => {
+    localStorage.setItem('selectedGuards', JSON.stringify(selectedGuards));
+  }, [selectedGuards]);
+
+  useEffect(() => {
+    localStorage.setItem('schedule', JSON.stringify(schedule));
+  }, [schedule]);
+
   const handleAddGuard = useCallback((guardName) => {
     if (!selectedGuards.includes(guardName)) {
       setSelectedGuards([...selectedGuards, guardName]);
@@ -25,6 +47,8 @@ function Table({ styles }) {
   const handleReset = () => {
     setSelectedGuards([]);
     setSchedule({});
+    localStorage.removeItem('selectedGuards');
+    localStorage.removeItem('schedule');
   };
 
   useEffect(() => {
@@ -38,13 +62,11 @@ function Table({ styles }) {
     const guardHours = {};
     const guardShifts = {};
 
-    // Инициализация часов и смен для каждого охранника
     sortedGuards.forEach(guard => {
       guardShifts[guard] = [];
       guardHours[guard] = 0;
     });
 
-    // Распределение главного поста
     let guardIndex = 0;
     for (let hour = 8; hour < 23; hour++) {
       if (guardCount > 0) {
@@ -62,14 +84,12 @@ function Table({ styles }) {
       guardHours[guardName]++;
     }
 
-    // Распределение второстепенных постов
     Object.keys(newSchedule).forEach(postId => {
       if (postId !== '1') {
         const post = newSchedule[postId];
         post.guards = [];
 
         if (guardCount > 1) {
-          // Находим охранника с минимальной нагрузкой
           let minHours = Math.min(...Object.values(guardHours));
           let selectedGuard = Object.keys(guardHours).find(guard => guardHours[guard] === minHours);
 
