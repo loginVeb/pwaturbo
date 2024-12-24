@@ -106,7 +106,10 @@ function Table({ styles }) {
         {Object.keys(posts).map(postId => (
           <div key={postId} className={`${styles.postIdAll} ${styles[`postId${postId}`]}`}>
             <h4>{schedule[postId]?.name}</h4>
-            <div className={styles.p}>Время: {schedule[postId]?.startTime?.join(':')} - {schedule[postId]?.endTime?.join(':')}</div>
+            <div className={styles.p}>
+              Время: {schedule[postId]?.startTime?.map(time => String(time).padStart(2, '0')).join(':')} - 
+              {schedule[postId]?.endTime?.map(time => String(time).padStart(2, '0')).join(':')}
+            </div>
             <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
               {postId === '1' ? (
                 Object.entries(schedule.guardShifts || {}).map(([guardName, shifts]) => (
