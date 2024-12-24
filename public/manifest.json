@@ -22,9 +22,9 @@
 
  "screenshots": [
   {
-    "src": "/screenshots/mobile_screenshot_4.png",
+    "src": "/screenshots/wide_screenshot_4.png",
     "type": "image/png",
-    "platform": "narrow", 
+    "platform": "wide",
     "sizes": "750x1334"
   },
   {
