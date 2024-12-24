@@ -35,67 +35,62 @@ function Table({ styles }) {
     const newSchedule = JSON.parse(JSON.stringify(posts));
     const sortedGuards = [...selectedGuards];
     const guardCount = sortedGuards.length;
-    let guardIndex = 0;
-    const guardHours = Array(guardCount).fill(0);
+    const guardHours = {};
     const guardShifts = {};
 
+    // Инициализация часов и смен для каждого охранника
     sortedGuards.forEach(guard => {
-      guardShifts[guard] = [];
+        guardShifts[guard] = [];
+        guardHours[guard] = 0;
     });
 
+    // Распределение главного поста
+    let guardIndex = 0;
     for (let hour = 8; hour < 23; hour++) {
-      if (guardCount > 0) {
-        const guardName = sortedGuards[guardIndex];
-        const startHour = hour;
-        const endHour = (hour + 1) % 24;
-        const shift = `${String(startHour).padStart(2, '0')}:00 - ${String(endHour).padStart(2, '0')}:00`;
-
-        guardShifts[guardName].push(shift);
-        guardHours[guardIndex] += 1;
-
-        guardIndex = (guardIndex + 1) % guardCount;
-      }
+        if (guardCount > 0) {
+            const guardName = sortedGuards[guardIndex];
+            const shift = `${String(hour).padStart(2, '0')}:00 - ${String((hour + 1) % 24).padStart(2, '0')}:00`;
+            guardShifts[guardName].push(shift);
+            guardHours[guardName]++;
+            guardIndex = (guardIndex + 1) % guardCount;
+        }
     }
 
     if (guardCount > 0) {
-      const guardName = sortedGuards[guardIndex];
-      const shift = `23:00 - 00:00`;
-
-      guardShifts[guardName].push(shift);
-      guardHours[guardIndex] += 1;
+        const guardName = sortedGuards[guardIndex];
+        guardShifts[guardName].push(`23:00 - 00:00`);
+        guardHours[guardName]++;
     }
 
+    // Распределение второстепенных постов
     Object.keys(newSchedule).forEach(postId => {
-      if (postId !== '1') {
-        const post = newSchedule[postId];
-        const startTime = post.startTime;
-        const endTime = post.endTime;
-        post.guards = [];
+        if (postId !== '1') {
+            const post = newSchedule[postId];
+            post.guards = [];
+            
+            if (guardCount > 0) {
+                // Находим охранника с минимальной нагрузкой
+                let minHours = Infinity;
+                let selectedGuard = null;
 
-        let minHours = Infinity;
-        let selectedGuard = null;
+                for (const guard of sortedGuards) {
+                    const isGuardBusy = guardShifts[guard].some(shift => {
+                        const [shiftStart] = shift.split(' - ').map(time => parseInt(time.split(':')[0]));
+                        return shiftStart === post.startTime[0];
+                    });
 
-        for (let i = 0; i < guardCount; i++) {
-          const guardName = sortedGuards[i];
-          const guardIsFree = !guardShifts[guardName].some(shift => {
-            const [start, end] = shift.split(' - ').map(time => parseInt(time.split(':')[0], 10));
-            return (
-              (startTime[0] >= start && startTime[0] < end) ||
-              (endTime[0] > start && endTime[0] <= end)
-            );
-          });
+                    if (!isGuardBusy && guardHours[guard] < minHours) {
+                        minHours = guardHours[guard];
+                        selectedGuard = guard;
+                    }
+                }
 
-          if (guardIsFree && guardHours[i] < minHours) {
-            minHours = guardHours[i];
-            selectedGuard = guardName;
-          }
+                if (selectedGuard) {
+                    post.guards.push(selectedGuard);
+                    guardHours[selectedGuard] += 0.5;
+                }
+            }
         }
-
-        if (selectedGuard) {
-          post.guards.push(selectedGuard);
-          guardHours[sortedGuards.indexOf(selectedGuard)] += 0.5;
-        }
-      }
     });
 
     setSchedule({ ...newSchedule, guardShifts });
