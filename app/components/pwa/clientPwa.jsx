@@ -1,4 +1,3 @@
-
 'use client';
 import { useEffect, useState } from 'react';
 
@@ -10,7 +9,7 @@ function ClientPwa({styles}) {
     const handleBeforeInstallPrompt = (event) => {
       event.preventDefault();
       setDeferredPrompt(event);
-      setShowInstallButton(true); // Показываем кнопку установки
+      setShowInstallButton(true);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -22,20 +21,32 @@ function ClientPwa({styles}) {
 
   const handleInstallClick = async () => {
     if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log(`User response to the install prompt: ${outcome}`);
-      setDeferredPrompt(null);
-      setShowInstallButton(false);
+      try {
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response to the install prompt: ${outcome}`);
+        setDeferredPrompt(null);
+        setShowInstallButton(false);
+      } catch (error) {
+        console.error('Error during installation:', error);
+      }
     }
+  };
+
+  const handleCloseClick = () => {
+    setShowInstallButton(false);
   };
 
   return (
     <div className={styles.clientPwa}>
       {showInstallButton && (
-        <button onClick={handleInstallClick} >
-          Установить приложение
-        </button>
+        <div className={styles.installContainer}>
+          <button onClick={handleInstallClick} className={styles.installButton}>
+            Установить приложение
+          </button>
+          <button onClick={handleCloseClick} className={styles.closeButton}>
+            ×
+          </button>
+        </div>
       )}
     </div>
   );
