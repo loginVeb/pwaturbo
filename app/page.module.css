@@ -1,7 +1,7 @@
 .mainPageDiv {
   display: grid;
-  grid-template-columns: repeat(24, 1fr);
-  grid-template-rows: repeat(24, 1fr);
+  grid-template-columns: repeat(48, 1fr);
+  grid-template-rows: repeat(48, 1fr);
   height: 100vh;
   background:blue;
   
@@ -13,13 +13,48 @@
   color: #000;
 }
 
+.installContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.installButton {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.installButton:hover {
+  background-color: #45a049;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #f00909;
+}
+
+.closeButton:hover {
+  color: #c31d1d;
+}
+
 .table{
-  grid-area: 2/1/25/25;
+  grid-area: 2/1/49/49;
   color: #1c382b;
   background: #db963b;
   display: grid;
-  grid-template-columns: repeat(24, 1fr);
-  grid-template-rows: repeat(24, 1fr);
+  grid-template-columns: repeat(48, 1fr);
+  grid-template-rows: repeat(48, 1fr);
 }
 
 .dvList ul {
@@ -28,7 +63,7 @@
 }
 
 .field{
-  grid-area: 1/3/5/17;
+  grid-area: 1 / 10 / 5 / 29;
   color: #191d1b;
   background: #e9f3f7;
 
@@ -36,21 +71,21 @@
 }
 
 .reset{
-  grid-area: 1/17/3/23;
+  grid-area: 1 / 29 / 3 / 36;
   color: #080808de;
   background: hwb(0 5% 9%);
   
 }
 
 .confirmButton{
-  grid-area: 3/17/5/23;
+  grid-area: 3/29/5/36;
   color: #080808de;
   background: hwb(110 4% 5%);
   
 }
 
 .dvList{
-  grid-area: 5/3/25/23;
+  grid-area: 5 / 7 / 49 / 43;
   color: #080808de;
   background: hwb(64 9% 12%);
   display: grid;
@@ -88,21 +123,7 @@
   grid-area: 2/22/25/25;
 }
 
-.listItem{
-  flex-wrap: nowrap;
-  border: 5px solid rgb(207, 22, 22);
-  padding: 15px;
-  min-height: 40px; /* Минимальная высота */
-  display: flex;
-  align-items: center; /* Центрирование текста по вертикали */
-  font-size: 18px;
 
-}
-
-.listItem::before {
-  content: attr(data-index);
-  margin-right: 5px; /* Отступ справа от номера */
-}
 
 
 
@@ -118,16 +139,17 @@
 
 @media(420px <=width <= 499px) {
   .table {
-    grid-area: 2/1/25/25;
+    grid-area: 2/1/49/49;
     color: #1c382b;
     background: #db963b;
     display: grid;
-    grid-template-columns: repeat(24, 1fr);
-    grid-template-rows: repeat(24, 1fr);
+    grid-template-columns: repeat(48, 1fr);
+    grid-template-rows: repeat(48, 1fr);
+    font-size: 12px;
   }
 
   .field{
-    grid-area: 1/1/5/17;
+    grid-area: 1/1/5/36;
     color: #191d1b;
     background: #e9f3f7;
   
@@ -135,27 +157,29 @@
   }
   
   .reset{
-    grid-area: 1/17/3/25;
+    grid-area: 1/36/3/49;
     color: #080808de;
     background: hwb(0 5% 9%);
     
   }
   
   .confirmButton{
-    grid-area: 3/17/5/25;
+    grid-area: 3/36/5/49;
     color: #080808de;
     background: hwb(110 4% 5%);
     
   }
   
   .dvList{
-    grid-area: 5/1/25/25;
+    grid-area: 5/1/49/49;
     color: #080808de;
     background: hwb(64 9% 12%);
     display: grid;
     grid-template-columns: repeat(24, 1fr);
     grid-template-rows: repeat(24, 1fr);
   }
+
+
   .list{
     grid-area: 2/1/24/25;
     color: #0a0a0ade;
@@ -165,38 +189,23 @@
     list-style-type: none;
   }
   
-  .listItem{
-    flex-wrap: nowrap;
-    border: 1px solid black;
-    padding: 15px;
-    min-height: 40px; /* Минимальная высота */
-    display: flex;
-    align-items: center; /* Центрирование текста по вертикали */
-    font-size: 18px;
-  
-  }
-  
-  .listItem::before {
-    content: attr(data-index);
-    margin-right: 5px; /* Отступ справа от номера */
-  }
-  
+
  
 }
   
 @media(280px <=width <= 419px) {
   .table {
-    grid-area: 2/1/25/25;
+    grid-area: 2/1/49/49;
     color: #1c382b;
     background: #db963b;
     display: grid;
-    grid-template-columns: repeat(24, 1fr);
-    grid-template-rows: repeat(24, 1fr);
+    grid-template-columns: repeat(48, 1fr);
+    grid-template-rows: repeat(48, 1fr);
     font-size: 12px;
   }
 
   .field{
-    grid-area: 1/1/5/17;
+    grid-area: 1/1/5/36;
     color: #191d1b;
     background: #e9f3f7;
   
@@ -204,21 +213,21 @@
   }
   
   .reset{
-    grid-area: 1/17/3/25;
+    grid-area: 1/36/3/49;
     color: #080808de;
     background: hwb(0 5% 9%);
     
   }
   
   .confirmButton{
-    grid-area: 3/17/5/25;
+    grid-area: 3/36/5/49;
     color: #080808de;
     background: hwb(110 4% 5%);
     
   }
   
   .dvList{
-    grid-area: 5/1/25/25;
+    grid-area: 5/1/49/49;
     color: #080808de;
     background: hwb(64 9% 12%);
     display: grid;
@@ -236,20 +245,6 @@
     list-style-type: none;
   }
   
-  .listItem{
-    flex-wrap: nowrap;
-    border: 1px solid black;
-    padding: 15px;
-    min-height: 40px; /* Минимальная высота */
-    display: flex;
-    align-items: center; /* Центрирование текста по вертикали */
-    font-size: 14px;
-  
-  }
-  
-  .listItem::before {
-    content: attr(data-index);
-    margin-right: 5px; /* Отступ справа от номера */
-  }
+
   
 }
