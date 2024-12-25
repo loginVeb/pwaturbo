@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 const guardNames = ['Логинов', 'Захаров', 'Орлов', 'Цветков', 'Тихомиров'];
 
 const posts = {
-  1: { name: 'Главный пост', startTime: [8, 0], endTime: [23, 0] },
+  1: { name: 'пост 1', startTime: [8, 0], endTime: [23, 0] },
   2: { name: 'Пост 2', startTime: [16, 45], endTime: [17, 15] },
   5: { name: 'Пост 5', startTime: [12, 0], endTime: [12, 30] },
   10: { name: 'Пост 10', startTime: [10, 30], endTime: [11, 0] },
