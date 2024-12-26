@@ -1,18 +1,28 @@
 {
-  "name": "timing",
+ "name": "timing",
   "short_name": "timing",
   "theme_color": "#FFFFFF",
   "background_color": "#FFFFFF",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "description": "Приложение для управления расписанием",
+  "description": "Приложение для управления расписанием охранников. Позволяет создавать и редактировать графики работы, назначать охранников на посты и отслеживать их рабочее время.",
   "prefer_related_applications": false,
-  "categories": ["utilities"],
+  "categories": ["productivity", "utilities"],
   "lang": "ru",
   "dir": "ltr",
-  "scope": "/",
-  "id": "timing_app",
+  "iarc_rating_id": "ru",
+  "developer": {
+    "name": "Loginov",
+    "url": "https://ваш-сайт.com"
+  },
+  "license": "MIT",
+  "version": "1.0.0",
+  "offline_enabled": true,
+  "permissions": [
+    "geolocation",
+    "notifications"
+  ],
   "shortcuts": [
     {
       "name": "Открыть расписание",

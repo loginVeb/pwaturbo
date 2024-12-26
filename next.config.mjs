@@ -5,5 +5,21 @@ const withPWA = withPWAInit({
 });
 
 export default withPWA({
-  // Your Next.js config
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.optimization.splitChunks.cacheGroups.commons = {
+        test: /[\\/]node_modules[\\/]/,
+        name: 'vendor',
+        chunks: 'all',
+      };
+    }
+    return config;
+  },
+  images: {
+    domains: ['example.com'],
+  },
+  webpackDevMiddleware: config => {
+    return config;
+  },
+  // Добавьте другие настройки Next.js здесь, если они есть
 });
