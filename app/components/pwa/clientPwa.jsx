@@ -22,8 +22,9 @@ function ClientPwa({styles}) {
   const handleInstallClick = async () => {
     if (deferredPrompt) {
       try {
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log(`User response to the install prompt: ${outcome}`);
+        const { outcome } = await deferredPrompt.prompt();
+        const result = await deferredPrompt.userChoice;
+        console.log(`User response to the install prompt: ${result.outcome}`);
         setDeferredPrompt(null);
         setShowInstallButton(false);
       } catch (error) {
