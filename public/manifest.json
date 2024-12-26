@@ -9,7 +9,8 @@
   "description": "Приложение для управления расписанием",
   "prefer_related_applications": false,
   "categories": ["utilities"],
-
+  "lang": "ru",
+  "dir": "ltr",
   "scope": "/",
   "id": "timing_app",
   "shortcuts": [

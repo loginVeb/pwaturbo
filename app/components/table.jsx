@@ -1,7 +1,7 @@
 'use client';
 import { useState, useCallback, useEffect } from 'react';
 
-const guardNames = ['Логинов', 'Захаров', 'Орлов', 'Цветков', 'Тихомиров'];
+const guardNames = ['Орлов', 'Тихомиров', 'Цветков', 'Логинов', 'Захаров'];
 
 const posts = {
   1: { name: 'пост 1', startTime: [8, 0], endTime: [23, 0] },
