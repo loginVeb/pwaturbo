@@ -52,7 +52,7 @@
   color: #c31d1d;
 }
 
-/* Дополнительные стили для улучшения внешнего вида */
+
 .installButton:focus {
   outline: none;
   box-shadow: 0 0 5px rgba(81, 203, 238, 0.5);
@@ -61,6 +61,8 @@
 .installContainer:focus-within {
   box-shadow: 0 0 5px rgba(81, 203, 238, 0.5);
 }
+
+
 .table{
   grid-area: 2/1/49/49;
   color: #1c382b;
@@ -76,7 +78,7 @@
 }
 
 .field{
-  grid-area: 1 / 10 / 5 / 29;
+  grid-area: 1 / 12 / 5 / 29;
   color: #333;
   background: #e6f3ff;
   border: 1px solid rgba(204, 204, 204, 0.5);
@@ -94,7 +96,7 @@
 }
 
 .reset {
-  grid-area: 1 / 29 / 3 / 36;
+  grid-area: 1 / 29 / 3 / 38;
   color: #333;
   background: #ffebee;
   border: 1px solid rgba(204, 204, 204, 0.5);
@@ -106,7 +108,7 @@
 }
 
 .confirmButton {
-  grid-area: 3/29/5/36;
+  grid-area: 3/29/5/38;
   color: #333;
   background: #e8f5e9;
   border: 1px solid rgba(204, 204, 204, 0.5);
@@ -142,30 +144,29 @@
   border: 1px solid rgba(204, 204, 204, 0.5);
 }
 .postId1{
-  grid-area: 2/1/25/6;
+  grid-area: 2/1/25/5;
 
 }
 .postId2{
-  grid-area: 2/6/25/10;
+  grid-area: 2/5/25/9;
 }
 .postId5{
-  grid-area: 2/10/25/14;
+  grid-area: 2/9/25/13;
 
 }
 .postId10{
-  grid-area: 2/14/25/18;
+  grid-area: 2/13/25/17;
 }
 .postId11{
-  grid-area: 2/18/25/22;
+  grid-area: 2/17/25/21;
 }
 .postId14{
-  grid-area: 2/22/25/25;
+  grid-area: 2/21/25/25;
 }
 
 
 
-
-@media(420px <=width <= 499px) {
+@media(1200px <=width <= 1367px) {
   .table {
     grid-area: 2/1/49/49;
     color: #1c382b;
@@ -175,44 +176,101 @@
     grid-template-rows: repeat(48, 1fr);
     font-size: 11px;
   }
-
-  .field{
-    grid-area: 1/1/5/36;
-    color: #333;
-    padding: 5px;
-  
-  }
-  
-  .reset{
-    grid-area: 1/36/3/49;
-    font-size: 11px;
-    
-  }
-  
-  .confirmButton{
-    grid-area: 3/36/5/49;
-    font-size: 11px;
-    
-  }
-  
-  .dvList{
-    grid-area: 5/1/49/49;
-    color: #080808de;
-    background: hwb(64 9% 12%);
-    display: grid;
-    grid-template-columns: repeat(24, 1fr);
-    grid-template-rows: repeat(24, 1fr);
-  }
-
-
- 
-
- 
 }
-  
-@media(280px <=width <= 419px) {
+
+@media(1024px <=width <= 1199px){
   .table {
     grid-area: 2/1/49/49;
+    color: #1c382b;
+    background: #db963b;
+    display: grid;
+    grid-template-columns: repeat(48, 1fr);
+    grid-template-rows: repeat(48, 1fr);
+    font-size: 11px;
+  }
+}
+
+@media(800px <=width <= 1023px) {
+  .table {
+    grid-area: 2/1/49/49;
+    color: #1c382b;
+    background: #db963b;
+    display: grid;
+    grid-template-columns: repeat(48, 1fr);
+    grid-template-rows: repeat(48, 1fr);
+    font-size: 11px;
+  }
+}
+@media(680px <=width <= 799px) {
+  .table {
+    grid-area: 2/1/49/49;
+    color: #1c382b;
+    background: #db963b;
+    display: grid;
+    grid-template-columns: repeat(48, 1fr);
+    grid-template-rows: repeat(48, 1fr);
+    font-size: 11px;
+  }
+/*  */
+@media(500px <=width <= 679px) {
+  .table {
+    grid-area: 2/1/49/49;
+    color: #1c382b;
+    background: #db963b;
+    display: grid;
+    grid-template-columns: repeat(48, 1fr);
+    grid-template-rows: repeat(48, 1fr);
+    font-size: 11px;
+  }
+/*  */
+  @media(420px <=width <= 499px) {
+    .table {
+      grid-area: 2/1/49/49;
+      color: #1c382b;
+      background: #db963b;
+      display: grid;
+      grid-template-columns: repeat(48, 1fr);
+      grid-template-rows: repeat(48, 1fr);
+      font-size: 11px;
+    }
+  
+    .field{
+      grid-area: 1/1/5/36;
+      color: #333;
+      padding: 5px;
+    
+    }
+    
+    .reset{
+      grid-area: 1/36/3/49;
+      font-size: 11px;
+      
+    }
+    
+    .confirmButton{
+      grid-area: 3/36/5/49;
+      font-size: 11px;
+      
+    }
+    
+    .dvList{
+      grid-area: 5/1/49/49;
+      color: #080808de;
+      background: hwb(64 9% 12%);
+      display: grid;
+      grid-template-columns: repeat(24, 1fr);
+      grid-template-rows: repeat(24, 1fr);
+    }
+  
+  
+   
+  
+   
+  }
+  /*  */
+@media(280px <=width <= 419px) {
+  .table {
+    grid-area: 6/1/49/49;
     color: #1c382b;
     background: #db963b;
     display: grid;

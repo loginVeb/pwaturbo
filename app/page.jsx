@@ -1,12 +1,14 @@
 
 import styles from "./page.module.css";
 import ClientPwa from "./components/pwa/clientPwa";
+import Header from "./components/headers/header";
 import Table from './components/table';
 
 export default function Home() {
   return (
     <div className={styles.mainPageDiv}>
      <ClientPwa styles={styles} />
+     <Header styles={styles} />
      <Table styles={styles} />
  </div>
   );
