@@ -166,7 +166,7 @@
 
 
 
-@media(1200px <=width <= 1367px) {
+/* @media(1200px <=width <= 1367px) {
   .table {
  
   }
@@ -188,16 +188,22 @@
 
   }
 }
-/*  */
+
 @media(500px <=width <= 679px) {
   .table {
 
   }
 }
-/*  */
+*/
   @media(420px <=width <= 499px) {
     .table {
-     
+      grid-area: 6/1/49/49;
+      color: #1c382b;
+      background: #db963b;
+      display: grid;
+      grid-template-columns: repeat(48, 1fr);
+      grid-template-rows: repeat(48, 1fr);
+      font-size: 11px;
     }
   
     .field{
@@ -229,7 +235,7 @@
     }
   
    
-  }
+  } 
   /*  */
 @media(280px <=width <= 419px) {
   .table {
