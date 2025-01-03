@@ -168,70 +168,36 @@
 
 @media(1200px <=width <= 1367px) {
   .table {
-    grid-area: 2/1/49/49;
-    color: #1c382b;
-    background: #db963b;
-    display: grid;
-    grid-template-columns: repeat(48, 1fr);
-    grid-template-rows: repeat(48, 1fr);
-    font-size: 11px;
+ 
   }
 }
 
 @media(1024px <=width <= 1199px){
   .table {
-    grid-area: 2/1/49/49;
-    color: #1c382b;
-    background: #db963b;
-    display: grid;
-    grid-template-columns: repeat(48, 1fr);
-    grid-template-rows: repeat(48, 1fr);
-    font-size: 11px;
+   
   }
 }
 
 @media(800px <=width <= 1023px) {
   .table {
-    grid-area: 2/1/49/49;
-    color: #1c382b;
-    background: #db963b;
-    display: grid;
-    grid-template-columns: repeat(48, 1fr);
-    grid-template-rows: repeat(48, 1fr);
-    font-size: 11px;
+ 
   }
 }
 @media(680px <=width <= 799px) {
   .table {
-    grid-area: 2/1/49/49;
-    color: #1c382b;
-    background: #db963b;
-    display: grid;
-    grid-template-columns: repeat(48, 1fr);
-    grid-template-rows: repeat(48, 1fr);
-    font-size: 11px;
+
   }
+}
 /*  */
 @media(500px <=width <= 679px) {
   .table {
-    grid-area: 2/1/49/49;
-    color: #1c382b;
-    background: #db963b;
-    display: grid;
-    grid-template-columns: repeat(48, 1fr);
-    grid-template-rows: repeat(48, 1fr);
-    font-size: 11px;
+
   }
+}
 /*  */
   @media(420px <=width <= 499px) {
     .table {
-      grid-area: 2/1/49/49;
-      color: #1c382b;
-      background: #db963b;
-      display: grid;
-      grid-template-columns: repeat(48, 1fr);
-      grid-template-rows: repeat(48, 1fr);
-      font-size: 11px;
+     
     }
   
     .field{
@@ -262,9 +228,6 @@
       grid-template-rows: repeat(24, 1fr);
     }
   
-  
-   
-  
    
   }
   /*  */
@@ -287,7 +250,6 @@
   .reset{
     grid-area: 1/36/3/49;
     font-size: 11px;
-    
   }
   
   .confirmButton{

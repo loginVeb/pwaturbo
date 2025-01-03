@@ -44,7 +44,6 @@ export default function Home() {
 //git branch -D name
 //Чтобы удалить ветку из удаленного репозитория, 
  //git push origin --delete nameBranch
- 
 // npx prisma
 // npx prisma init
 // npx prisma db pull
