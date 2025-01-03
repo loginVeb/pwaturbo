@@ -128,7 +128,7 @@
 .dvList{
   grid-area: 5 / 7 / 49 / 43;
   color: #080808de;
-  background: hwb(64 9% 12%);
+  background: #F7DC6F;
   display: grid;
   grid-template-columns: repeat(24, 1fr);
   grid-template-rows: repeat(24, 1fr);
@@ -228,7 +228,7 @@
     .dvList{
       grid-area: 5/1/49/49;
       color: #080808de;
-      background: hwb(64 9% 12%);
+      background: #F7DC6F;
       display: grid;
       grid-template-columns: repeat(24, 1fr);
       grid-template-rows: repeat(24, 1fr);
@@ -266,7 +266,7 @@
   .dvList{
     grid-area: 5/1/49/49;
     color: #080808de;
-    background: hwb(64 9% 12%);
+    background: #F7DC6F;
     display: grid;
     grid-template-columns: repeat(24, 1fr);
     grid-template-rows: repeat(24, 1fr);
