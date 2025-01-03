@@ -18,8 +18,5 @@ export default withPWA({
   images: {
     domains: ['example.com'],
   },
-  webpackDevMiddleware: config => {
-    return config;
-  },
-  // Добавьте другие настройки Next.js здесь, если они есть
+  // Удален блок routes
 });
