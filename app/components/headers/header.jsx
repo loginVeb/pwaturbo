@@ -4,7 +4,7 @@ import styles from './header.module.css'
 function Header() {
   return (
     <div className={styles.header}>header
-     <picture>
+     {/* <picture>
      <source media="(min-width: 2560px)" srcSet="/fonHeadrs/zima-extra-large.jpg" />
      <source media="(min-width: 2560px)" srcSet="/fonHeadrs/zima-extra-large.jpg" />
         <source media="(min-width: 1920px)" srcSet="/fonHeadrs/zima-large.jpg" />
@@ -17,7 +17,7 @@ function Header() {
         <source media="(min-width: 480px)" srcSet="/fonHeadrs/zima-mobile-portrait.jpg" />
         <source media="(min-width: 320px)" srcSet="/fonHeadrs/zima-extra-small.jpg" />
         <img src="/fonHeadrs/zima-default.jpg" alt="Header image" />
-      </picture>
+      </picture> */}
     </div>
   )
 }
