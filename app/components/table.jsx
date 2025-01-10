@@ -132,6 +132,7 @@ function Table({ styles }) {
       <button className={styles.reset} onClick={handleReset}>
         сброс списка
       </button>
+      
       <div className={styles.dvList}>
         <h3 className={styles.h3}>Расписание</h3>
         {Object.keys(posts).map(postId => (
