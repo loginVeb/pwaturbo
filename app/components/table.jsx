@@ -59,22 +59,42 @@ function Table({ styles }) {
     const currentTime = new Date();
     const currentHour = currentTime.getHours();
     const currentMinutes = currentTime.getMinutes();
+    const currentTimeInMinutes = currentHour * 60 + currentMinutes;
     const newGuardStatus = {};
 
+    Object.entries(posts).forEach(([postId, postData]) => {
+      const postStartTimeInMinutes = postData.startTime[0] * 60 + postData.startTime[1];
+      const postEndTimeInMinutes = postData.endTime[0] * 60 + postData.endTime[1];
+      
+      if (schedule[postId]?.guards) {
+        schedule[postId].guards.forEach(guard => {
+          if (!newGuardStatus[guard]) {
+            newGuardStatus[guard] = {
+              completedShifts: [],
+              completedPosts: []
+            };
+          }
+          
+          if (currentTimeInMinutes > postEndTimeInMinutes || currentHour < 8) {
+            newGuardStatus[guard].completedPosts.push(postId);
+          }
+        });
+      }
+    });
+
     Object.entries(schedule.guardShifts || {}).forEach(([guardName, shifts]) => {
-      newGuardStatus[guardName] = {
-        completedShifts: [],
-        activeShift: null
-      };
+      if (!newGuardStatus[guardName]) {
+        newGuardStatus[guardName] = {
+          completedShifts: [],
+          completedPosts: []
+        };
+      }
 
       shifts.forEach(shift => {
         const [startTime] = shift.split(' - ');
         const [startHour] = startTime.split(':').map(Number);
         
-        // Проверяем время с учетом перехода через полночь
-        if (currentHour < 8) { // Если сейчас ночь (после полуночи)
-          newGuardStatus[guardName].completedShifts.push(shift);
-        } else if (currentHour > startHour || (currentHour === startHour && currentMinutes > 0)) {
+        if (currentHour < 8 || currentHour > startHour || (currentHour === startHour && currentMinutes > 0)) {
           newGuardStatus[guardName].completedShifts.push(shift);
         }
       });
@@ -184,9 +204,9 @@ function Table({ styles }) {
                     <strong>{guardName}:</strong>{' '}
                     {shifts.map((shift, index) => (
                       <React.Fragment key={shift}>
-                        <span className={guardStatus[guardName]?.completedShifts.includes(shift) ? styles.completedShift : ''}>
+                        <span className={guardStatus[guardName]?.completedShifts?.includes(shift) ? styles.completedShift : ''}>
                           {shift}
-                          {guardStatus[guardName]?.completedShifts.includes(shift) && 
+                          {guardStatus[guardName]?.completedShifts?.includes(shift) && 
                             <span className={styles.checkmark}> ✓</span>
                           }
                         </span>
@@ -198,7 +218,12 @@ function Table({ styles }) {
                 ))
               ) : (
                 schedule[postId]?.guards?.map((guard, index) => (
-                  <li key={index}>{guard}</li>
+                  <li key={index} className={guardStatus[guard]?.completedPosts?.includes(postId) ? styles.completedShift : ''}>
+                    {guard}
+                    {guardStatus[guard]?.completedPosts?.includes(postId) && 
+                      <span className={styles.checkmark}> ✓</span>
+                    }
+                  </li>
                 ))
               )}
             </ul>
