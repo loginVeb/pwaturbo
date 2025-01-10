@@ -1,7 +1,8 @@
 'use client';
+import React from 'react';
 import { useState, useCallback, useEffect } from 'react';
 
-const guardNames = ['Орлов', 'Тихомиров', 'Цветков', 'Логинов','Горигорьев','Захаров'];
+const guardNames = ['Орлов', 'Тихомиров', 'Цветков', 'Логинов', 'Горигорьев', 'Захаров'];
 
 const posts = {
   1: { name: 'пост 1', startTime: [8, 0], endTime: [23, 0] },
@@ -15,21 +16,18 @@ const posts = {
 function Table({ styles }) {
   const [selectedGuards, setSelectedGuards] = useState([]);
   const [schedule, setSchedule] = useState({});
+  const [guardStatus, setGuardStatus] = useState({});
 
-  // Загрузка сохраненных данных при запуске
   useEffect(() => {
     const savedGuards = localStorage.getItem('selectedGuards');
     const savedSchedule = localStorage.getItem('schedule');
-    
-    if (savedGuards) {
-      setSelectedGuards(JSON.parse(savedGuards));
-    }
-    if (savedSchedule) {
-      setSchedule(JSON.parse(savedSchedule));
-    }
+    const savedStatus = localStorage.getItem('guardStatus');
+
+    if (savedGuards) setSelectedGuards(JSON.parse(savedGuards));
+    if (savedSchedule) setSchedule(JSON.parse(savedSchedule));
+    if (savedStatus) setGuardStatus(JSON.parse(savedStatus));
   }, []);
 
-  // Сохранение данных при изменениях
   useEffect(() => {
     localStorage.setItem('selectedGuards', JSON.stringify(selectedGuards));
   }, [selectedGuards]);
@@ -37,6 +35,10 @@ function Table({ styles }) {
   useEffect(() => {
     localStorage.setItem('schedule', JSON.stringify(schedule));
   }, [schedule]);
+
+  useEffect(() => {
+    localStorage.setItem('guardStatus', JSON.stringify(guardStatus));
+  }, [guardStatus]);
 
   const handleAddGuard = useCallback((guardName) => {
     if (!selectedGuards.includes(guardName)) {
@@ -47,8 +49,42 @@ function Table({ styles }) {
   const handleReset = () => {
     setSelectedGuards([]);
     setSchedule({});
+    setGuardStatus({});
     localStorage.removeItem('selectedGuards');
     localStorage.removeItem('schedule');
+    localStorage.removeItem('guardStatus');
+  };
+
+  const calculateTimeStatus = () => {
+    const currentTime = new Date();
+    const currentHour = currentTime.getHours();
+    const currentMinutes = currentTime.getMinutes();
+    const newGuardStatus = {};
+
+    Object.entries(schedule.guardShifts || {}).forEach(([guardName, shifts]) => {
+      newGuardStatus[guardName] = {
+        completedShifts: [],
+        activeShift: null
+      };
+
+      shifts.forEach(shift => {
+        const [startTime] = shift.split(' - ');
+        const [startHour] = startTime.split(':').map(Number);
+        
+        // Проверяем время с учетом перехода через полночь
+        if (currentHour < 8) { // Если сейчас ночь (после полуночи)
+          newGuardStatus[guardName].completedShifts.push(shift);
+        } else if (currentHour > startHour || (currentHour === startHour && currentMinutes > 0)) {
+          newGuardStatus[guardName].completedShifts.push(shift);
+        }
+      });
+    });
+
+    setGuardStatus(newGuardStatus);
+  };
+
+  const handleConfirm = () => {
+    calculateTimeStatus();
   };
 
   useEffect(() => {
@@ -107,11 +143,10 @@ function Table({ styles }) {
 
   return (
     <div className={styles.table}>
-
       <select className={styles.field} onChange={(e) => handleAddGuard(e.target.value)}>
         <option value="">составить смену</option>
-        {guardNames.filter(name => !selectedGuards.includes(name)).map((guardName, index) => (
-          <option key={guardName} value={guardName} data-index={index + 1}>
+        {guardNames.filter(name => !selectedGuards.includes(name)).map((guardName) => (
+          <option key={guardName} value={guardName}>
             {guardName}
           </option>
         ))}
@@ -119,34 +154,46 @@ function Table({ styles }) {
 
       <select className={styles.fieldAdd}>
         <option value="">добавить в 19:00</option>
-        
-      </select>
-      <select className={styles.fieldЕxclude} >
-        <option value="">исключить в 19:00</option>
-        
       </select>
 
-      <button className={styles.confirmButton} onClick={() => console.log(selectedGuards)}>
+      <select className={styles.fieldЕxclude}>
+        <option value="">исключить в 19:00</option>
+      </select>
+
+      <button className={styles.confirmButton} onClick={handleConfirm}>
         Подтвердить список
       </button>
+
       <button className={styles.reset} onClick={handleReset}>
         сброс списка
       </button>
-      
+
       <div className={styles.dvList}>
         <h3 className={styles.h3}>Расписание</h3>
         {Object.keys(posts).map(postId => (
           <div key={postId} className={`${styles.postIdAll} ${styles[`postId${postId}`]}`}>
             <h4>{schedule[postId]?.name}</h4>
             <div className={styles.p}>
-              Время: {schedule[postId]?.startTime?.map(time => String(time).padStart(2, '0')).join(':')} - 
+              Время: {schedule[postId]?.startTime?.map(time => String(time).padStart(2, '0')).join(':')} -
               {schedule[postId]?.endTime?.map(time => String(time).padStart(2, '0')).join(':')}
             </div>
             <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
               {postId === '1' ? (
                 Object.entries(schedule.guardShifts || {}).map(([guardName, shifts]) => (
                   <li key={guardName}>
-                    <strong>{guardName}:</strong> {shifts.join(', ')} сумма часов: {Number(schedule.guardHours?.[guardName] || 0).toFixed(2)}
+                    <strong>{guardName}:</strong>{' '}
+                    {shifts.map((shift, index) => (
+                      <React.Fragment key={shift}>
+                        <span className={guardStatus[guardName]?.completedShifts.includes(shift) ? styles.completedShift : ''}>
+                          {shift}
+                          {guardStatus[guardName]?.completedShifts.includes(shift) && 
+                            <span className={styles.checkmark}> ✓</span>
+                          }
+                        </span>
+                        {index < shifts.length - 1 && <span>, </span>}
+                      </React.Fragment>
+                    ))}
+                    <div>сумма часов: {Number(schedule.guardHours?.[guardName] || 0).toFixed(2)}</div>
                   </li>
                 ))
               ) : (

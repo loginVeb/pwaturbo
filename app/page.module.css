@@ -7,6 +7,17 @@
   
 }
 
+.completedShift {
+  color: #808080;
+}
+
+.checkmark {
+  color: #4CAF50;
+  display: inline-block;
+  margin-left: 4px;
+}
+
+
 .clientPwa {
   grid-area: 1/1/2/7;
   position: fixed;
