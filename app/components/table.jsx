@@ -17,16 +17,38 @@ function Table({ styles }) {
   const [selectedGuards, setSelectedGuards] = useState([]);
   const [schedule, setSchedule] = useState({});
   const [guardStatus, setGuardStatus] = useState({});
+  const [isConfirmed, setIsConfirmed] = useState(false);
 
   useEffect(() => {
     const savedGuards = localStorage.getItem('selectedGuards');
     const savedSchedule = localStorage.getItem('schedule');
     const savedStatus = localStorage.getItem('guardStatus');
+    const savedConfirmation = localStorage.getItem('isConfirmed');
 
     if (savedGuards) setSelectedGuards(JSON.parse(savedGuards));
     if (savedSchedule) setSchedule(JSON.parse(savedSchedule));
     if (savedStatus) setGuardStatus(JSON.parse(savedStatus));
+    if (savedConfirmation) setIsConfirmed(JSON.parse(savedConfirmation));
   }, []);
+
+  useEffect(() => {
+    if (isConfirmed) {
+      calculateTimeStatus(); // Первоначальная проверка
+      
+      const checkTime = () => {
+        const now = new Date();
+        const minutes = now.getMinutes();
+        
+        // Проверяем только в :00 и :30 минут каждого часа
+        if (minutes === 0 || minutes === 30) {
+          calculateTimeStatus();
+        }
+      };
+
+      const interval = setInterval(checkTime, 60000); // Проверяем каждую минуту, но обновляем только в :00 и :30
+      return () => clearInterval(interval);
+    }
+  }, [isConfirmed]);
 
   useEffect(() => {
     localStorage.setItem('selectedGuards', JSON.stringify(selectedGuards));
@@ -40,19 +62,25 @@ function Table({ styles }) {
     localStorage.setItem('guardStatus', JSON.stringify(guardStatus));
   }, [guardStatus]);
 
+  useEffect(() => {
+    localStorage.setItem('isConfirmed', JSON.stringify(isConfirmed));
+  }, [isConfirmed]);
+
   const handleAddGuard = useCallback((guardName) => {
-    if (!selectedGuards.includes(guardName)) {
+    if (!selectedGuards.includes(guardName) && !isConfirmed) {
       setSelectedGuards([...selectedGuards, guardName]);
     }
-  }, [selectedGuards]);
+  }, [selectedGuards, isConfirmed]);
 
   const handleReset = () => {
     setSelectedGuards([]);
     setSchedule({});
     setGuardStatus({});
+    setIsConfirmed(false);
     localStorage.removeItem('selectedGuards');
     localStorage.removeItem('schedule');
     localStorage.removeItem('guardStatus');
+    localStorage.removeItem('isConfirmed');
   };
 
   const calculateTimeStatus = () => {
@@ -105,6 +133,7 @@ function Table({ styles }) {
 
   const handleConfirm = () => {
     calculateTimeStatus();
+    setIsConfirmed(true);
   };
 
   useEffect(() => {
@@ -161,9 +190,23 @@ function Table({ styles }) {
     setSchedule({ ...newSchedule, guardShifts, guardHours });
   };
 
+const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date().toLocaleTimeString());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className={styles.table}>
-      <select className={styles.field} onChange={(e) => handleAddGuard(e.target.value)}>
+      <select 
+        className={styles.field} 
+        onChange={(e) => handleAddGuard(e.target.value)}
+        disabled={isConfirmed}
+      >
         <option value="">составить смену</option>
         {guardNames.filter(name => !selectedGuards.includes(name)).map((guardName) => (
           <option key={guardName} value={guardName}>
@@ -180,7 +223,7 @@ function Table({ styles }) {
         <option value="">исключить в 19:00</option>
       </select>
 
-      <button className={styles.confirmButton} onClick={handleConfirm}>
+      <button className={styles.confirmButton} onClick={handleConfirm} disabled={isConfirmed}>
         Подтвердить список
       </button>
 
@@ -189,7 +232,8 @@ function Table({ styles }) {
       </button>
 
       <div className={styles.dvList}>
-        <h3 className={styles.h3}>Расписание</h3>
+        <h3 className={styles.h3}>Расписание</h3>     
+        <div className={styles.time}>{currentTime}</div>
         {Object.keys(posts).map(postId => (
           <div key={postId} className={`${styles.postIdAll} ${styles[`postId${postId}`]}`}>
             <h4>{schedule[postId]?.name}</h4>
