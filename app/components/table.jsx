@@ -107,14 +107,25 @@ function Table({ styles }) {
 
   return (
     <div className={styles.table}>
+
       <select className={styles.field} onChange={(e) => handleAddGuard(e.target.value)}>
-        <option value="">Выберите охранника</option>
+        <option value="">составить смену</option>
         {guardNames.filter(name => !selectedGuards.includes(name)).map((guardName, index) => (
           <option key={guardName} value={guardName} data-index={index + 1}>
             {guardName}
           </option>
         ))}
       </select>
+
+      <select className={styles.fieldAdd}>
+        <option value="">добавить в 19:00</option>
+        
+      </select>
+      <select className={styles.fieldЕxclude} >
+        <option value="">исключить в 19:00</option>
+        
+      </select>
+
       <button className={styles.confirmButton} onClick={() => console.log(selectedGuards)}>
         Подтвердить список
       </button>
