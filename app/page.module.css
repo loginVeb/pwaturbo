@@ -211,6 +211,8 @@
   }
 }
 */
+
+
   @media(420px <=width <= 499px) {
     .table {
       grid-area: 6/1/49/49;
@@ -273,7 +275,8 @@
   
    
   } 
-  /*  */
+ 
+
 @media(280px <=width <= 419px) {
   .table {
     grid-area: 6/1/49/49;
