@@ -2,7 +2,7 @@
 import React from 'react';
 import { useState, useCallback, useEffect } from 'react';
 
-const guardNames = ['Орлов', 'Тихомиров', 'Цветков', 'Логинов', 'Григорьев', 'Захаров'];
+const guardNames = ['Орлов', 'Тихомиров', 'Цветков', 'Логинов',  'Захаров','Григорьев'];
 
 const posts = {
   1: { name: 'пост 1', startTime: [8, 0], endTime: [23, 0] },
@@ -223,12 +223,23 @@ function Table({ styles }) {
       </select>
 
       <select className={styles.fieldAdd}>
-        <option value="">добавить в 19:00</option>
-      </select>
+  <option value="">добавить в 19:00</option>
+  {guardNames.map((guardName) => (
+    <option key={guardName} value={guardName}>
+      {guardName}
+    </option>
+  ))}
+</select>
 
-      <select className={styles.fieldЕxclude}>
-        <option value="">исключить в 19:00</option>
-      </select>
+<select className={styles.fieldЕxclude}>
+  <option value="">исключить в 19:00</option>
+  {selectedGuards.map((guardName) => (
+    <option key={guardName} value={guardName}>
+      {guardName}
+    </option>
+  ))}
+</select>
+
 
       <button className={styles.confirmButton} onClick={handleConfirm} disabled={isConfirmed}>
         Подтвердить список
