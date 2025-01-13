@@ -2,7 +2,7 @@
 import React from 'react';
 import { useState, useCallback, useEffect } from 'react';
 
-const guardNames = ['Орлов', 'Тихомиров', 'Цветков', 'Логинов', 'Горигорьев', 'Захаров'];
+const guardNames = ['Орлов', 'Тихомиров', 'Цветков', 'Логинов', 'Григорьев', 'Захаров'];
 
 const posts = {
   1: { name: 'пост 1', startTime: [8, 0], endTime: [23, 0] },
@@ -18,6 +18,7 @@ function Table({ styles }) {
   const [schedule, setSchedule] = useState({});
   const [guardStatus, setGuardStatus] = useState({});
   const [isConfirmed, setIsConfirmed] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
 
   useEffect(() => {
     const savedGuards = localStorage.getItem('selectedGuards');
@@ -28,24 +29,32 @@ function Table({ styles }) {
     if (savedGuards) setSelectedGuards(JSON.parse(savedGuards));
     if (savedSchedule) setSchedule(JSON.parse(savedSchedule));
     if (savedStatus) setGuardStatus(JSON.parse(savedStatus));
-    if (savedConfirmation) setIsConfirmed(JSON.parse(savedConfirmation));
+    if (savedConfirmation) {
+      setIsConfirmed(JSON.parse(savedConfirmation));
+      setTimeout(calculateTimeStatus, 0);
+    }
   }, []);
 
   useEffect(() => {
+    if (isConfirmed && Object.keys(schedule).length > 0) {
+      calculateTimeStatus();
+    }
+  }, [schedule, isConfirmed]);
+
+  useEffect(() => {
     if (isConfirmed) {
-      calculateTimeStatus(); // Первоначальная проверка
+      calculateTimeStatus();
       
       const checkTime = () => {
         const now = new Date();
         const minutes = now.getMinutes();
         
-        // Проверяем только в :00 и :30 минут каждого часа
         if (minutes === 0 || minutes === 30) {
           calculateTimeStatus();
         }
       };
 
-      const interval = setInterval(checkTime, 60000); // Проверяем каждую минуту, но обновляем только в :00 и :30
+      const interval = setInterval(checkTime, 60000);
       return () => clearInterval(interval);
     }
   }, [isConfirmed]);
@@ -189,8 +198,6 @@ function Table({ styles }) {
 
     setSchedule({ ...newSchedule, guardShifts, guardHours });
   };
-
-const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
 
   useEffect(() => {
     const timer = setInterval(() => {
