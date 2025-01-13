@@ -2,7 +2,7 @@
 import React from 'react';
 import { useState, useCallback, useEffect } from 'react';
 
-const guardNames = ['Орлов', 'Тихомиров', 'Цветков', 'Логинов',  'Захаров','Григорьев'];
+const guardNames = ['Орлов', 'Тихомиров', 'Цветков', 'Логинов', 'Григорьев', 'Захаров'];
 
 const posts = {
   1: { name: 'пост 1', startTime: [8, 0], endTime: [23, 0] },
@@ -18,7 +18,15 @@ function Table({ styles }) {
   const [schedule, setSchedule] = useState({});
   const [guardStatus, setGuardStatus] = useState({});
   const [isConfirmed, setIsConfirmed] = useState(false);
-  const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
+  const [currentTime, setCurrentTime] = useState('');
+
+  useEffect(() => {
+    setCurrentTime(new Date().toLocaleTimeString());
+    const timer = setInterval(() => {
+      setCurrentTime(new Date().toLocaleTimeString());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const savedGuards = localStorage.getItem('selectedGuards');
@@ -151,7 +159,12 @@ function Table({ styles }) {
 
   const generateSchedule = () => {
     const newSchedule = JSON.parse(JSON.stringify(posts));
-    const sortedGuards = [...selectedGuards];
+    const firstSelectedGuardIndex = guardNames.findIndex(name => name === selectedGuards[0]);
+    const reorderedGuardNames = [
+      ...guardNames.slice(firstSelectedGuardIndex),
+      ...guardNames.slice(0, firstSelectedGuardIndex)
+    ];
+    const sortedGuards = reorderedGuardNames.filter(name => selectedGuards.includes(name));
     const guardCount = sortedGuards.length;
     const guardHours = {};
     const guardShifts = {};
@@ -199,14 +212,6 @@ function Table({ styles }) {
     setSchedule({ ...newSchedule, guardShifts, guardHours });
   };
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date().toLocaleTimeString());
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
   return (
     <div className={styles.table}>
       <select 
@@ -223,23 +228,22 @@ function Table({ styles }) {
       </select>
 
       <select className={styles.fieldAdd}>
-  <option value="">добавить в 19:00</option>
-  {guardNames.map((guardName) => (
-    <option key={guardName} value={guardName}>
-      {guardName}
-    </option>
-  ))}
-</select>
+        <option value="">добавить в 19:00</option>
+        {guardNames.map((guardName) => (
+          <option key={guardName} value={guardName}>
+            {guardName}
+          </option>
+        ))}
+      </select>
 
-<select className={styles.fieldЕxclude}>
-  <option value="">исключить в 19:00</option>
-  {selectedGuards.map((guardName) => (
-    <option key={guardName} value={guardName}>
-      {guardName}
-    </option>
-  ))}
-</select>
-
+      <select className={styles.fieldЕxclude}>
+        <option value="">исключить в 19:00</option>
+        {selectedGuards.map((guardName) => (
+          <option key={guardName} value={guardName}>
+            {guardName}
+          </option>
+        ))}
+      </select>
 
       <button className={styles.confirmButton} onClick={handleConfirm} disabled={isConfirmed}>
         Подтвердить список
