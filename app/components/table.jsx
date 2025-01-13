@@ -214,36 +214,39 @@ function Table({ styles }) {
 
   return (
     <div className={styles.table}>
-      <select 
-        className={styles.field} 
-        onChange={(e) => handleAddGuard(e.target.value)}
-        disabled={isConfirmed}
-      >
-        <option value="">составить смену</option>
-        {guardNames.filter(name => !selectedGuards.includes(name)).map((guardName) => (
-          <option key={guardName} value={guardName}>
-            {guardName}
-          </option>
-        ))}
-      </select>
+ <select 
+  className={styles.field} 
+  onChange={(e) => handleAddGuard(e.target.value)}
+  disabled={isConfirmed}
+>
+  <option value="" hidden>составить смену</option>
+  <option value="" disabled>Фикс очередь, составил старший смены</option>
+  {guardNames.filter(name => !selectedGuards.includes(name)).map((guardName) => (
+    <option key={guardName} value={guardName}>
+      {guardName}
+    </option>
+  ))}
+</select>
 
-      <select className={styles.fieldAdd}>
-        <option value="">добавить в 19:00</option>
-        {guardNames.map((guardName) => (
-          <option key={guardName} value={guardName}>
-            {guardName}
-          </option>
-        ))}
-      </select>
 
-      <select className={styles.fieldЕxclude}>
-        <option value="">исключить в 19:00</option>
-        {selectedGuards.map((guardName) => (
-          <option key={guardName} value={guardName}>
-            {guardName}
-          </option>
-        ))}
-      </select>
+<select className={styles.fieldAdd}>
+  <option value="" hidden>добавить в 19:00</option>
+  {guardNames.map((guardName) => (
+    <option key={guardName} value={guardName}>
+      {guardName}
+    </option>
+  ))}
+</select>
+
+<select className={styles.fieldЕxclude}>
+  <option value="" hidden>исключить в 19:00</option>
+  {selectedGuards.map((guardName) => (
+    <option key={guardName} value={guardName}>
+      {guardName}
+    </option>
+  ))}
+</select>
+
 
       <button className={styles.confirmButton} onClick={handleConfirm} disabled={isConfirmed}>
         Подтвердить список
