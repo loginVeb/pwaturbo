@@ -96,26 +96,11 @@ function Table({ styles }) {
     const guardShifts = { ...newSchedule.guardShifts };
     const guardHours = { ...newSchedule.guardHours };
 
-    // Find the last guard before 19:00
-    const guardOrder = [];
-    for (let hour = 8; hour < 19; hour++) {
-      Object.entries(guardShifts).forEach(([guard, shifts]) => {
-        shifts.forEach(shift => {
-          const [startTime] = shift.split(' - ');
-          const [shiftHour] = startTime.split(':').map(Number);
-          if (shiftHour === hour) {
-            if (!guardOrder.includes(guard)) {
-              guardOrder.push(guard);
-            }
-          }
-        });
-      });
-    }
-
-    // Add new guard to the order if not present
-    if (!guardOrder.includes(guardName)) {
-      guardOrder.push(guardName);
-    }
+    // Get all active guards including the new one
+    const activeGuards = [...new Set([...Object.keys(guardShifts), guardName])];
+    
+    // Sort active guards according to guardNames order
+    const sortedActiveGuards = guardNames.filter(name => activeGuards.includes(name));
 
     // Remove existing evening shifts
     Object.keys(guardShifts).forEach(guard => {
@@ -136,10 +121,10 @@ function Table({ styles }) {
       guardHours[guardName] = 0;
     }
 
-    // Distribute evening shifts according to guard order
+    // Distribute evening shifts according to fixed order
     let index = 0;
     for (let hour = 19; hour < 23; hour++) {
-      const currentGuard = guardOrder[index % guardOrder.length];
+      const currentGuard = sortedActiveGuards[index % sortedActiveGuards.length];
       const shift = `${String(hour).padStart(2, '0')}:00 - ${String(hour + 1).padStart(2, '0')}:00`;
       guardShifts[currentGuard].push(shift);
       guardHours[currentGuard] = (guardHours[currentGuard] || 0) + 1;
@@ -147,7 +132,7 @@ function Table({ styles }) {
     }
 
     // Add final shift
-    const lastGuard = guardOrder[index % guardOrder.length];
+    const lastGuard = sortedActiveGuards[index % sortedActiveGuards.length];
     guardShifts[lastGuard].push('23:00 - 00:00');
     guardHours[lastGuard]++;
 
