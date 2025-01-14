@@ -89,6 +89,75 @@ function Table({ styles }) {
     }
   }, [selectedGuards, isConfirmed]);
 
+  const handleAddGuardAt19 = (guardName) => {
+    if (!guardName) return;
+    
+    const newSchedule = { ...schedule };
+    const guardShifts = { ...newSchedule.guardShifts };
+    const guardHours = { ...newSchedule.guardHours };
+
+    // Find the last guard before 19:00
+    const guardOrder = [];
+    for (let hour = 8; hour < 19; hour++) {
+      Object.entries(guardShifts).forEach(([guard, shifts]) => {
+        shifts.forEach(shift => {
+          const [startTime] = shift.split(' - ');
+          const [shiftHour] = startTime.split(':').map(Number);
+          if (shiftHour === hour) {
+            if (!guardOrder.includes(guard)) {
+              guardOrder.push(guard);
+            }
+          }
+        });
+      });
+    }
+
+    // Add new guard to the order if not present
+    if (!guardOrder.includes(guardName)) {
+      guardOrder.push(guardName);
+    }
+
+    // Remove existing evening shifts
+    Object.keys(guardShifts).forEach(guard => {
+      guardShifts[guard] = guardShifts[guard].filter(shift => {
+        const [startTime] = shift.split(' - ');
+        const [hour] = startTime.split(':').map(Number);
+        if (hour >= 19) {
+          guardHours[guard] -= 1;
+          return false;
+        }
+        return true;
+      });
+    });
+
+    // Initialize new guard if needed
+    if (!guardShifts[guardName]) {
+      guardShifts[guardName] = [];
+      guardHours[guardName] = 0;
+    }
+
+    // Distribute evening shifts according to guard order
+    let index = 0;
+    for (let hour = 19; hour < 23; hour++) {
+      const currentGuard = guardOrder[index % guardOrder.length];
+      const shift = `${String(hour).padStart(2, '0')}:00 - ${String(hour + 1).padStart(2, '0')}:00`;
+      guardShifts[currentGuard].push(shift);
+      guardHours[currentGuard] = (guardHours[currentGuard] || 0) + 1;
+      index++;
+    }
+
+    // Add final shift
+    const lastGuard = guardOrder[index % guardOrder.length];
+    guardShifts[lastGuard].push('23:00 - 00:00');
+    guardHours[lastGuard]++;
+
+    setSchedule({
+      ...newSchedule,
+      guardShifts,
+      guardHours
+    });
+  };
+
   const handleReset = () => {
     setSelectedGuards([]);
     setSchedule({});
@@ -175,7 +244,7 @@ function Table({ styles }) {
     });
 
     let guardIndex = 0;
-    for (let hour = 8; hour < 23; hour++) {
+    for (let hour = 8; hour < 19; hour++) {
       if (guardCount > 0) {
         const guardName = sortedGuards[guardIndex];
         const shift = `${String(hour).padStart(2, '0')}:00 - ${String((hour + 1) % 24).padStart(2, '0')}:00`;
@@ -183,12 +252,6 @@ function Table({ styles }) {
         guardHours[guardName]++;
         guardIndex = (guardIndex + 1) % guardCount;
       }
-    }
-
-    if (guardCount > 0) {
-      const guardName = sortedGuards[guardIndex];
-      guardShifts[guardName].push(`23:00 - 00:00`);
-      guardHours[guardName]++;
     }
 
     Object.keys(newSchedule).forEach(postId => {
@@ -214,39 +277,41 @@ function Table({ styles }) {
 
   return (
     <div className={styles.table}>
- <select 
-  className={styles.field} 
-  onChange={(e) => handleAddGuard(e.target.value)}
-  disabled={isConfirmed}
->
-  <option value="" hidden>составить смену</option>
-  <option value="" disabled>Фикс очередь, составил старший смены</option>
-  {guardNames.filter(name => !selectedGuards.includes(name)).map((guardName) => (
-    <option key={guardName} value={guardName}>
-      {guardName}
-    </option>
-  ))}
-</select>
+      <select 
+        className={styles.field} 
+        onChange={(e) => handleAddGuard(e.target.value)}
+        disabled={isConfirmed}
+      >
+        <option value="" hidden>составить смену</option>
+        <option value="" disabled>Фикс очередь, составил старший смены</option>
+        {guardNames.filter(name => !selectedGuards.includes(name)).map((guardName) => (
+          <option key={guardName} value={guardName}>
+            {guardName}
+          </option>
+        ))}
+      </select>
 
+      <select 
+        className={styles.fieldAdd}
+        onChange={(e) => handleAddGuardAt19(e.target.value)}
+        disabled={isConfirmed}
+      >
+        <option value="" hidden>добавить в 19:00</option>
+        {guardNames.map((guardName) => (
+          <option key={guardName} value={guardName}>
+            {guardName}
+          </option>
+        ))}
+      </select>
 
-<select className={styles.fieldAdd}>
-  <option value="" hidden>добавить в 19:00</option>
-  {guardNames.map((guardName) => (
-    <option key={guardName} value={guardName}>
-      {guardName}
-    </option>
-  ))}
-</select>
-
-<select className={styles.fieldЕxclude}>
-  <option value="" hidden>исключить в 19:00</option>
-  {selectedGuards.map((guardName) => (
-    <option key={guardName} value={guardName}>
-      {guardName}
-    </option>
-  ))}
-</select>
-
+      <select className={styles.fieldЕxclude}>
+        <option value="" hidden>исключить в 19:00</option>
+        {selectedGuards.map((guardName) => (
+          <option key={guardName} value={guardName}>
+            {guardName}
+          </option>
+        ))}
+      </select>
 
       <button className={styles.confirmButton} onClick={handleConfirm} disabled={isConfirmed}>
         Подтвердить список
