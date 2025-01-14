@@ -314,22 +314,26 @@ function Table({ styles }) {
             </div>
             <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
               {postId === '1' ? (
-                Object.entries(schedule.guardShifts || {}).map(([guardName, shifts]) => (
-                  <li key={guardName}>
-                    <strong>{guardName}:</strong>{' '}
-                    {shifts.map((shift, index) => (
-                      <React.Fragment key={shift}>
-                        <span className={guardStatus[guardName]?.completedShifts?.includes(shift) ? styles.completedShift : ''}>
-                          {shift}
-                          {guardStatus[guardName]?.completedShifts?.includes(shift) && 
-                            <span className={styles.checkmark}> ✓</span>
-                          }
-                        </span>                        {index < shifts.length - 1 && <span>, </span>}
-                      </React.Fragment>
-                    ))}                    
-                    <div>сумма часов: {Number(schedule.guardHours?.[guardName] || 0).toFixed(2)}</div>
-                  </li>
-                ))
+                // Сортируем охранников по фиксированному порядку
+                guardNames
+                  .filter(name => schedule.guardShifts?.[name]) // Берем только тех, кто есть в расписании
+                  .map((guardName) => (
+                    <li key={guardName}>
+                      <strong>{guardName}:</strong>{' '}
+                      {(schedule.guardShifts[guardName] || []).map((shift, index) => (
+                        <React.Fragment key={shift}>
+                          <span className={guardStatus[guardName]?.completedShifts?.includes(shift) ? styles.completedShift : ''}>
+                            {shift}
+                            {guardStatus[guardName]?.completedShifts?.includes(shift) && 
+                              <span className={styles.checkmark}> ✓</span>
+                            }
+                          </span>
+                          {index < schedule.guardShifts[guardName].length - 1 && <span>, </span>}
+                        </React.Fragment>
+                      ))}                    
+                      <div>сумма часов: {Number(schedule.guardHours?.[guardName] || 0).toFixed(2)}</div>
+                    </li>
+                  ))
               ) : (
                 schedule[postId]?.guards?.map((guard, index) => (
                   <li key={index} className={guardStatus[guard]?.completedPosts?.includes(postId) ? styles.completedShift : ''}>
@@ -349,4 +353,3 @@ function Table({ styles }) {
 }
 
 export default Table;
-
