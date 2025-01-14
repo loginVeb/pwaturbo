@@ -121,9 +121,31 @@ function Table({ styles }) {
       guardHours[guardName] = 0;
     }
 
-    // Distribute evening shifts according to fixed order
-    let index = 0;
+    // Find who has the last shift before 19:00
+    let lastGuardBefore19 = null;
+    Object.entries(guardShifts).forEach(([guard, shifts]) => {
+      shifts.forEach(shift => {
+        const [startTime] = shift.split(' - ');
+        const [hour] = startTime.split(':').map(Number);
+        if (hour === 18) {
+          lastGuardBefore19 = guard;
+        }
+      });
+    });
+
+    // Distribute evening shifts avoiding consecutive hours
+    let index = sortedActiveGuards.findIndex(guard => guard !== lastGuardBefore19);
     for (let hour = 19; hour < 23; hour++) {
+      // Skip the guard who had the previous hour
+      while (true) {
+        const previousShift = `${String(hour-1).padStart(2, '0')}:00 - ${String(hour).padStart(2, '0')}:00`;
+        const currentGuard = sortedActiveGuards[index % sortedActiveGuards.length];
+        const hasConsecutiveShift = guardShifts[currentGuard]?.some(shift => shift === previousShift);
+        
+        if (!hasConsecutiveShift) break;
+        index++;
+      }
+
       const currentGuard = sortedActiveGuards[index % sortedActiveGuards.length];
       const shift = `${String(hour).padStart(2, '0')}:00 - ${String(hour + 1).padStart(2, '0')}:00`;
       guardShifts[currentGuard].push(shift);
@@ -131,10 +153,19 @@ function Table({ styles }) {
       index++;
     }
 
-    // Add final shift
-    const lastGuard = sortedActiveGuards[index % sortedActiveGuards.length];
-    guardShifts[lastGuard].push('23:00 - 00:00');
-    guardHours[lastGuard]++;
+    // Add final shift (23:00 - 00:00)
+    while (true) {
+      const currentGuard = sortedActiveGuards[index % sortedActiveGuards.length];
+      const previousShift = '22:00 - 23:00';
+      const hasConsecutiveShift = guardShifts[currentGuard]?.some(shift => shift === previousShift);
+      
+      if (!hasConsecutiveShift) {
+        guardShifts[currentGuard].push('23:00 - 00:00');
+        guardHours[currentGuard]++;
+        break;
+      }
+      index++;
+    }
 
     setSchedule({
       ...newSchedule,
@@ -331,8 +362,7 @@ function Table({ styles }) {
                         </span>
                         {index < shifts.length - 1 && <span>, </span>}
                       </React.Fragment>
-                    ))}
-                    <div>сумма часов: {Number(schedule.guardHours?.[guardName] || 0).toFixed(2)}</div>
+                    ))}                    <div>сумма часов: {Number(schedule.guardHours?.[guardName] || 0).toFixed(2)}</div>
                   </li>
                 ))
               ) : (
@@ -354,3 +384,4 @@ function Table({ styles }) {
 }
 
 export default Table;
+
