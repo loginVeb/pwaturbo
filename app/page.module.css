@@ -96,6 +96,15 @@
   
 }
 
+.guardListItem {
+  padding: 8px 0;
+  border-bottom: 1px solid #cccccc;
+}
+
+.guardListItem:last-child {
+  border-bottom: none;
+}
+
 .field{
   grid-area: 1 / 1 / 3 / 29;
   color: #333;

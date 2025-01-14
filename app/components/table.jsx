@@ -52,11 +52,11 @@ function Table({ styles }) {
   useEffect(() => {
     if (isConfirmed) {
       calculateTimeStatus();
-      
+
       const checkTime = () => {
         const now = new Date();
         const minutes = now.getMinutes();
-        
+
         if (minutes === 0 || minutes === 30) {
           calculateTimeStatus();
         }
@@ -89,6 +89,15 @@ function Table({ styles }) {
     }
   }, [selectedGuards, isConfirmed]);
 
+  const findGuardWithShift = (guardShifts, targetShift) => {
+    for (const [guard, shifts] of Object.entries(guardShifts)) {
+      if (shifts.includes(targetShift)) {
+        return guard;
+      }
+    }
+    return null;
+  };
+
   const handleAddGuardAt19 = (guardName) => {
     if (!guardName) return;
 
@@ -96,42 +105,53 @@ function Table({ styles }) {
     const guardShifts = { ...newSchedule.guardShifts };
     const guardHours = { ...newSchedule.guardHours };
 
-    // Инициализация смен для нового охранника, если его еще нет
+    // Инициализация смен для нового охранника
     if (!guardShifts[guardName]) {
       guardShifts[guardName] = [];
       guardHours[guardName] = 0;
     }
 
-    // Получаем всех активных охранников, включая нового
+    // Находим охранника, который дежурит с 18:00 до 19:00
+    const lastGuardBefore19 = findGuardWithShift(guardShifts, '18:00 - 19:00');
+
+    // Получаем всех активных охранников
     const activeGuards = [...new Set([...Object.keys(guardShifts), guardName])];
 
-    // Сортируем активных охранников по порядку
+    // Сортируем активных охранников по порядку из guardNames
     const sortedActiveGuards = guardNames.filter(name => activeGuards.includes(name));
+
+    // Находим индекс охранника, который дежурил последним (в 18:00-19:00)
+    const lastGuardIndex = lastGuardBefore19 ? sortedActiveGuards.indexOf(lastGuardBefore19) : -1;
 
     // Удаляем существующие вечерние смены
     Object.keys(guardShifts).forEach(guard => {
       guardShifts[guard] = guardShifts[guard].filter(shift => {
         const [startTime] = shift.split(' - ');
         const [hour] = startTime.split(':').map(Number);
-        return hour < 19; // Удаляем смены, начинающиеся с 19:00
+        return hour < 19;
       });
     });
 
+    // Начинаем распределение с правильного индекса
+    let startIndex = lastGuardIndex !== -1 ?
+      (lastGuardIndex + 1) % sortedActiveGuards.length :
+      sortedActiveGuards.indexOf(guardName);
+
     // Распределяем вечерние смены
-    let index = 0;
     for (let hour = 19; hour < 23; hour++) {
-      const currentGuard = sortedActiveGuards[index % sortedActiveGuards.length];
+      const currentGuard = sortedActiveGuards[startIndex % sortedActiveGuards.length];
       const shift = `${String(hour).padStart(2, '0')}:00 - ${String(hour + 1).padStart(2, '0')}:00`;
       guardShifts[currentGuard].push(shift);
       guardHours[currentGuard] = (guardHours[currentGuard] || 0) + 1;
-      index++;
+      startIndex++;
     }
 
     // Добавляем последнюю смену (23:00 - 00:00)
-    const lastGuard = sortedActiveGuards[index % sortedActiveGuards.length];
+    const lastGuard = sortedActiveGuards[startIndex % sortedActiveGuards.length];
     guardShifts[lastGuard].push('23:00 - 00:00');
     guardHours[lastGuard]++;
 
+    // Обновляем расписание
     setSchedule({
       ...newSchedule,
       guardShifts,
@@ -160,7 +180,7 @@ function Table({ styles }) {
     Object.entries(posts).forEach(([postId, postData]) => {
       const postStartTimeInMinutes = postData.startTime[0] * 60 + postData.startTime[1];
       const postEndTimeInMinutes = postData.endTime[0] * 60 + postData.endTime[1];
-      
+
       if (schedule[postId]?.guards) {
         schedule[postId].guards.forEach(guard => {
           if (!newGuardStatus[guard]) {
@@ -169,7 +189,7 @@ function Table({ styles }) {
               completedPosts: []
             };
           }
-          
+
           if (currentTimeInMinutes > postEndTimeInMinutes || currentHour < 8) {
             newGuardStatus[guard].completedPosts.push(postId);
           }
@@ -188,7 +208,7 @@ function Table({ styles }) {
       shifts.forEach(shift => {
         const [startTime] = shift.split(' - ');
         const [startHour] = startTime.split(':').map(Number);
-        
+
         if (currentHour < 8 || currentHour > startHour || (currentHour === startHour && currentMinutes > 0)) {
           newGuardStatus[guardName].completedShifts.push(shift);
         }
@@ -258,8 +278,8 @@ function Table({ styles }) {
 
   return (
     <div className={styles.table}>
-      <select 
-        className={styles.field} 
+      <select
+        className={styles.field}
         onChange={(e) => handleAddGuard(e.target.value)}
         disabled={isConfirmed}
       >
@@ -272,17 +292,20 @@ function Table({ styles }) {
         ))}
       </select>
 
-      <select 
+      <select
         className={styles.fieldAdd}
         onChange={(e) => handleAddGuardAt19(e.target.value)}
         disabled={isConfirmed}
       >
         <option value="" hidden>добавить в 19:00</option>
-        {guardNames.map((guardName) => (
-          <option key={guardName} value={guardName}>
-            {guardName}
-          </option>
-        ))}
+        {guardNames
+          .filter(name => !selectedGuards.includes(name)) // Фильтруем уже выбранных охранников
+          .map((guardName) => (
+            <option key={guardName} value={guardName}>
+              {guardName}
+            </option>
+          ))
+        }
       </select>
 
       <select className={styles.fieldЕxclude}>
@@ -303,7 +326,7 @@ function Table({ styles }) {
       </button>
 
       <div className={styles.dvList}>
-        <h3 className={styles.h3}>Расписание</h3>     
+        <h3 className={styles.h3}>Расписание</h3>
         <div className={styles.time}>{currentTime}</div>
         {Object.keys(posts).map(postId => (
           <div key={postId} className={`${styles.postIdAll} ${styles[`postId${postId}`]}`}>
@@ -314,31 +337,30 @@ function Table({ styles }) {
             </div>
             <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
               {postId === '1' ? (
-                // Сортируем охранников по фиксированному порядку
                 guardNames
-                  .filter(name => schedule.guardShifts?.[name]) // Берем только тех, кто есть в расписании
+                  .filter(name => schedule.guardShifts?.[name])
                   .map((guardName) => (
-                    <li key={guardName}>
+                    <li key={guardName} className={styles.guardListItem}>
                       <strong>{guardName}:</strong>{' '}
                       {(schedule.guardShifts[guardName] || []).map((shift, index) => (
                         <React.Fragment key={shift}>
                           <span className={guardStatus[guardName]?.completedShifts?.includes(shift) ? styles.completedShift : ''}>
                             {shift}
-                            {guardStatus[guardName]?.completedShifts?.includes(shift) && 
+                            {guardStatus[guardName]?.completedShifts?.includes(shift) &&
                               <span className={styles.checkmark}> ✓</span>
                             }
                           </span>
                           {index < schedule.guardShifts[guardName].length - 1 && <span>, </span>}
                         </React.Fragment>
-                      ))}                    
-                      <div>сумма часов: {Number(schedule.guardHours?.[guardName] || 0).toFixed(2)}</div>
+                      ))}
+                      <div>дежурные часы: {Number(schedule.guardHours?.[guardName] || 0).toFixed(2)}</div>
                     </li>
                   ))
               ) : (
                 schedule[postId]?.guards?.map((guard, index) => (
                   <li key={index} className={guardStatus[guard]?.completedPosts?.includes(postId) ? styles.completedShift : ''}>
                     {guard}
-                    {guardStatus[guard]?.completedPosts?.includes(postId) && 
+                    {guardStatus[guard]?.completedPosts?.includes(postId) &&
                       <span className={styles.checkmark}> ✓</span>
                     }
                   </li>
