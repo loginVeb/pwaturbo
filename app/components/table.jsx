@@ -239,12 +239,12 @@ function Table({ styles }) {
 
   const generateSchedule = () => {
     const newSchedule = JSON.parse(JSON.stringify(posts));
-    const firstSelectedGuardIndex = guardNames.findIndex(name => name === selectedGuards[0]);
-    const reorderedGuardNames = [
-      ...guardNames.slice(firstSelectedGuardIndex),
-      ...guardNames.slice(0, firstSelectedGuardIndex)
-    ];
-    const sortedGuards = reorderedGuardNames.filter(name => selectedGuards.includes(name));
+  const firstSelectedGuardIndex = guardNames.findIndex(name => name === selectedGuards[0]);
+  const reorderedGuardNames = [
+    ...guardNames.slice(firstSelectedGuardIndex),
+    ...guardNames.slice(0, firstSelectedGuardIndex)
+  ];
+  const sortedGuards = reorderedGuardNames.filter(name => selectedGuards.includes(name) || addedGuardsAt19.includes(name));
     const guardCount = sortedGuards.length;
     const guardHours = {};
     const guardShifts = {};
