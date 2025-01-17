@@ -1,6 +1,5 @@
 'use client';
-import React from 'react';
-import { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 
 const guardNames = ['Орлов', 'Тихомиров', 'Цветков', 'Логинов', 'Григорьев', 'Захаров'];
 
@@ -19,6 +18,10 @@ function Table({ styles }) {
   const [guardStatus, setGuardStatus] = useState({});
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [currentTime, setCurrentTime] = useState('');
+  const [addGuardAt19Value, setAddGuardAt19Value] = useState([]);
+  const [addedGuardsAt19, setAddedGuardsAt19] = useState([]);
+
+  const addGuardAt19Ref = useRef(null);
 
   useEffect(() => {
     setCurrentTime(new Date().toLocaleTimeString());
@@ -33,6 +36,7 @@ function Table({ styles }) {
     const savedSchedule = localStorage.getItem('schedule');
     const savedStatus = localStorage.getItem('guardStatus');
     const savedConfirmation = localStorage.getItem('isConfirmed');
+    const savedAddedGuardsAt19 = localStorage.getItem('addedGuardsAt19');
 
     if (savedGuards) setSelectedGuards(JSON.parse(savedGuards));
     if (savedSchedule) setSchedule(JSON.parse(savedSchedule));
@@ -41,6 +45,7 @@ function Table({ styles }) {
       setIsConfirmed(JSON.parse(savedConfirmation));
       setTimeout(calculateTimeStatus, 0);
     }
+    if (savedAddedGuardsAt19) setAddedGuardsAt19(JSON.parse(savedAddedGuardsAt19));
   }, []);
 
   useEffect(() => {
@@ -83,9 +88,13 @@ function Table({ styles }) {
     localStorage.setItem('isConfirmed', JSON.stringify(isConfirmed));
   }, [isConfirmed]);
 
+  useEffect(() => {
+    localStorage.setItem('addedGuardsAt19', JSON.stringify(addedGuardsAt19));
+  }, [addedGuardsAt19]);
+
   const handleAddGuard = useCallback((guardName) => {
     if (!selectedGuards.includes(guardName) && !isConfirmed) {
-      setSelectedGuards([...selectedGuards, guardName]);
+      setSelectedGuards(prev => [...prev, guardName]);
     }
   }, [selectedGuards, isConfirmed]);
 
@@ -105,25 +114,16 @@ function Table({ styles }) {
     const guardShifts = { ...newSchedule.guardShifts };
     const guardHours = { ...newSchedule.guardHours };
 
-    // Инициализация смен для нового охранника
     if (!guardShifts[guardName]) {
       guardShifts[guardName] = [];
       guardHours[guardName] = 0;
     }
 
-    // Находим охранника, который дежурит с 18:00 до 19:00
     const lastGuardBefore19 = findGuardWithShift(guardShifts, '18:00 - 19:00');
-
-    // Получаем всех активных охранников
     const activeGuards = [...new Set([...Object.keys(guardShifts), guardName])];
-
-    // Сортируем активных охранников по порядку из guardNames
     const sortedActiveGuards = guardNames.filter(name => activeGuards.includes(name));
-
-    // Находим индекс охранника, который дежурил последним (в 18:00-19:00)
     const lastGuardIndex = lastGuardBefore19 ? sortedActiveGuards.indexOf(lastGuardBefore19) : -1;
 
-    // Удаляем существующие вечерние смены
     Object.keys(guardShifts).forEach(guard => {
       guardShifts[guard] = guardShifts[guard].filter(shift => {
         const [startTime] = shift.split(' - ');
@@ -132,12 +132,10 @@ function Table({ styles }) {
       });
     });
 
-    // Начинаем распределение с правильного индекса
     let startIndex = lastGuardIndex !== -1 ?
       (lastGuardIndex + 1) % sortedActiveGuards.length :
       sortedActiveGuards.indexOf(guardName);
 
-    // Распределяем вечерние смены
     for (let hour = 19; hour < 23; hour++) {
       const currentGuard = sortedActiveGuards[startIndex % sortedActiveGuards.length];
       const shift = `${String(hour).padStart(2, '0')}:00 - ${String(hour + 1).padStart(2, '0')}:00`;
@@ -146,17 +144,27 @@ function Table({ styles }) {
       startIndex++;
     }
 
-    // Добавляем последнюю смену (23:00 - 00:00)
     const lastGuard = sortedActiveGuards[startIndex % sortedActiveGuards.length];
     guardShifts[lastGuard].push('23:00 - 00:00');
     guardHours[lastGuard]++;
 
-    // Обновляем расписание
     setSchedule({
       ...newSchedule,
       guardShifts,
       guardHours
     });
+
+    setAddedGuardsAt19(prev => {
+      const updatedGuards = [...prev, guardName];
+      localStorage.setItem('addedGuardsAt19', JSON.stringify(updatedGuards));
+      return updatedGuards;
+    });
+
+    if (addGuardAt19Ref.current) {
+      addGuardAt19Ref.current.blur();
+    }
+
+    setAddGuardAt19Value('');
   };
 
   const handleReset = () => {
@@ -164,10 +172,12 @@ function Table({ styles }) {
     setSchedule({});
     setGuardStatus({});
     setIsConfirmed(false);
+    setAddedGuardsAt19([]);
     localStorage.removeItem('selectedGuards');
     localStorage.removeItem('schedule');
     localStorage.removeItem('guardStatus');
     localStorage.removeItem('isConfirmed');
+    localStorage.removeItem('addedGuardsAt19');
   };
 
   const calculateTimeStatus = () => {
@@ -245,7 +255,7 @@ function Table({ styles }) {
     });
 
     let guardIndex = 0;
-    for (let hour = 8; hour < 19; hour++) {
+    for (let hour = 8; hour < 24; hour++) { // Изменено на 24, чтобы учитывать смены до 23:00
       if (guardCount > 0) {
         const guardName = sortedGuards[guardIndex];
         const shift = `${String(hour).padStart(2, '0')}:00 - ${String((hour + 1) % 24).padStart(2, '0')}:00`;
@@ -294,12 +304,20 @@ function Table({ styles }) {
 
       <select
         className={styles.fieldAdd}
-        onChange={(e) => handleAddGuardAt19(e.target.value)}
+        onChange={(e) => {
+          handleAddGuardAt19(e.target.value);
+          setAddGuardAt19Value(''); // Сбрасываем значение после выбора
+          if (addGuardAt19Ref.current) {
+            addGuardAt19Ref.current.blur(); // Убираем фокус
+          }
+        }}
+        value={addGuardAt19Value}
         disabled={isConfirmed}
+        ref={addGuardAt19Ref} // Присваиваем реф
       >
         <option value="" hidden>добавить в 19:00</option>
         {guardNames
-          .filter(name => !selectedGuards.includes(name)) // Фильтруем уже выбранных охранников
+          .filter(name => !selectedGuards.includes(name) && !addedGuardsAt19.includes(name)) // Фильтруем уже выбранных охранников
           .map((guardName) => (
             <option key={guardName} value={guardName}>
               {guardName}
