@@ -193,24 +193,24 @@
   overflow-y: auto;
 }
 .postId1{
-  grid-area: 2/1/25/5;
+  grid-area: 2/1/25/10;
 
 }
 .postId2{
-  grid-area: 2/5/25/9;
+  grid-area: 2/10/25/13;
 }
 .postId5{
-  grid-area: 2/9/25/13;
+  grid-area: 2/13/25/16;
 
 }
 .postId10{
-  grid-area: 2/13/25/17;
+  grid-area: 2/16/25/19;
 }
 .postId11{
-  grid-area: 2/17/25/21;
+  grid-area: 2/19/25/22;
 }
 .postId14{
-  grid-area: 2/21/25/25;
+  grid-area: 2/22/25/25;
 }
 
 
