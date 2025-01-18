@@ -299,19 +299,20 @@ function Table({ styles }) {
 
   return (
     <div className={styles.table}>
-      <select
-        className={styles.field}
-        onChange={(e) => handleAddGuard(e.target.value)}
-        disabled={isConfirmed}
-      >
-        <option value="" hidden>Составить смену</option>
-        <option value="" disabled>Фикс очередь, составил старший смены</option>
-        {guardNames.filter(name => !selectedGuards.includes(name)).map((guardName) => (
-          <option key={guardName} value={guardName}>
-            {guardName}
-          </option>
-        ))}
-      </select>
+   <select
+  className={styles.field}
+  onChange={(e) => handleAddGuard(e.target.value)}
+  disabled={isConfirmed}
+>
+  <option value="" hidden>Составить смену</option>
+  <option value="" disabled>Фикс очередь, составил старший смены</option>
+  {guardNames.filter(name => !selectedGuards.includes(name) && !addedGuardsAt19.includes(name)).map((guardName) => (
+    <option key={guardName} value={guardName}>
+      {guardName}
+    </option>
+  ))}
+</select>
+
 
       <select
         className={styles.fieldAdd}
