@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 const guardNames = ['Орлов', 'Тихомиров', 'Цветков', 'Логинов', 'Григорьев', 'Захаров'];
 
 const posts = {
-  1: { name: 'пост 1', startTime: [8, 0], endTime: [23, 0] },
+  1: { name: 'Пост 1', startTime: [8, 0], endTime: [23, 0] },
   2: { name: 'Пост 2', startTime: [16, 45], endTime: [17, 15] },
   5: { name: 'Пост 5', startTime: [12, 0], endTime: [12, 30] },
   10: { name: 'Пост 10', startTime: [10, 30], endTime: [11, 0] },
@@ -239,12 +239,12 @@ function Table({ styles }) {
 
   const generateSchedule = () => {
     const newSchedule = JSON.parse(JSON.stringify(posts));
-  const firstSelectedGuardIndex = guardNames.findIndex(name => name === selectedGuards[0]);
-  const reorderedGuardNames = [
-    ...guardNames.slice(firstSelectedGuardIndex),
-    ...guardNames.slice(0, firstSelectedGuardIndex)
-  ];
-  const sortedGuards = reorderedGuardNames.filter(name => selectedGuards.includes(name) || addedGuardsAt19.includes(name));
+    const firstSelectedGuardIndex = guardNames.findIndex(name => name === selectedGuards[0]);
+    const reorderedGuardNames = [
+      ...guardNames.slice(firstSelectedGuardIndex),
+      ...guardNames.slice(0, firstSelectedGuardIndex)
+    ];
+    const sortedGuards = reorderedGuardNames.filter(name => selectedGuards.includes(name) || addedGuardsAt19.includes(name));
     const guardCount = sortedGuards.length;
     const guardHours = {};
     const guardShifts = {};
@@ -264,6 +264,17 @@ function Table({ styles }) {
         guardIndex = (guardIndex + 1) % guardCount;
       }
     }
+
+    // Обработка охранников, добавленных в 19:00
+    addedGuardsAt19.forEach(guard => {
+      if (guardShifts[guard]) {
+        guardShifts[guard] = guardShifts[guard].filter(shift => {
+          const [startTime] = shift.split(' - ');
+          const [hour] = startTime.split(':').map(Number);
+          return hour >= 19; // Убедиться, что охранник работает только с 19:00
+        });
+      }
+    });
 
     Object.keys(newSchedule).forEach(postId => {
       if (postId !== '1') {
@@ -293,7 +304,7 @@ function Table({ styles }) {
         onChange={(e) => handleAddGuard(e.target.value)}
         disabled={isConfirmed}
       >
-        <option value="" hidden>составить смену</option>
+        <option value="" hidden>Составить смену</option>
         <option value="" disabled>Фикс очередь, составил старший смены</option>
         {guardNames.filter(name => !selectedGuards.includes(name)).map((guardName) => (
           <option key={guardName} value={guardName}>
@@ -315,7 +326,7 @@ function Table({ styles }) {
         disabled={isConfirmed}
         ref={addGuardAt19Ref} // Присваиваем реф
       >
-        <option value="" hidden>добавить в 19:00</option>
+        <option value="" hidden>Добавить в 19:00</option>
         {guardNames
           .filter(name => !selectedGuards.includes(name) && !addedGuardsAt19.includes(name)) // Фильтруем уже выбранных охранников
           .map((guardName) => (
@@ -327,7 +338,7 @@ function Table({ styles }) {
       </select>
 
       <select className={styles.fieldЕxclude}>
-        <option value="" hidden>исключить в 19:00</option>
+        <option value="" hidden>Исключить в 19:00</option>
         {selectedGuards.map((guardName) => (
           <option key={guardName} value={guardName}>
             {guardName}
@@ -340,7 +351,7 @@ function Table({ styles }) {
       </button>
 
       <button className={styles.reset} onClick={handleReset}>
-        сброс списка
+        Сброс списка
       </button>
 
       <div className={styles.dvList}>
@@ -371,7 +382,7 @@ function Table({ styles }) {
                           {index < schedule.guardShifts[guardName].length - 1 && <span>, </span>}
                         </React.Fragment>
                       ))}
-                      <div>дежурные часы: {Number(schedule.guardHours?.[guardName] || 0).toFixed(2)}</div>
+                      <div>Дежурные часы: {Number(schedule.guardHours?.[guardName] || 0).toFixed(2)}</div>
                     </li>
                   ))
               ) : (
